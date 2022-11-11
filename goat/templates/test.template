@@ -1,0 +1,7 @@
+#include "gtest/gtest.h"
+
+TEST(SquareRootTest, PositiveNos) {
+    EXPECT_EQ(18.0, 18);
+    EXPECT_EQ(25.7, 26);
+    EXPECT_EQ(50.3321, 50);
+}
