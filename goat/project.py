@@ -1,22 +1,10 @@
 from __future__ import annotations
-from enum import Enum
-from shutil import rmtree
 from typing import List
 from pathlib import Path
 from goat.configuration import Configuration
 from toml import loads as toml_to_dict, dumps as dict_to_toml
 from subprocess import CompletedProcess, run
-
-
-TEMPLATE_DIRECTORY = Path(__file__).parent / "templates"
-
-
-class Template(Enum):
-    MAIN = "main"
-    TEST = "test"
-
-    def read(self) -> str:
-        return (TEMPLATE_DIRECTORY / f"{self.value}.template").read_text()
+from goat.template import Template
 
 
 class Project:
