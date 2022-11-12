@@ -1,7 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
 from goat.configuration.configuration_root import ConfigurationRoot
 from toml import loads as toml_to_dict
 
@@ -11,8 +10,8 @@ class ProjectConfiguration:
     root_path: Path
     target: str
     compiler: str
-    compiler_flags: List[str]
-    include_paths: List[Path]
+    compiler_flags: list[str]
+    include_paths: list[Path]
 
     CONFIGURATION_FILE_NAME = "goat.toml"
     SOURCE_DIRECTORY_NAME = "source"

@@ -1,6 +1,4 @@
-from typing import List
 from pydantic import BaseModel, Field
-
 from goat.configuration.compilation_configuration import CompilationConfiguration
 from goat.configuration.packages_configuration import PackagesConfiguration
 
