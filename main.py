@@ -8,19 +8,14 @@ Description: A C++ build system
 from argparse import ArgumentParser, Namespace, RawDescriptionHelpFormatter
 from pathlib import Path
 from goat.project.project import Project
-from goat.project.project_configuration import ProjectConfiguration
-from goat.raw_configuration.configuration_base import ConfigurationRoot
-from toml import loads as toml_to_dict
 
 
 def build_project() -> None:
-    project = Project.load(Path.cwd())
-    project.build()
+    Project.load(Path.cwd()).build()
 
 
 def new_project(name: str) -> None:
-    root_path = Path.cwd() / name
-    Project.default(root_path).initialize()
+    Project.new(Path.cwd() / name)
 
 
 def parse_arguments() -> Namespace:

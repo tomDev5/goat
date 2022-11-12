@@ -2,6 +2,7 @@ from __future__ import annotations
 from pathlib import Path
 from goat.project.project_configuration import ProjectConfiguration
 from subprocess import CompletedProcess, run
+from goat.project.project_initializer import ProjectInitializer
 from goat.templates.template import Template
 
 
@@ -22,33 +23,13 @@ class Project:
         return cls(project_configuration)
 
     @classmethod
-    def default(cls, root_path: Path) -> Project:
-        return cls(ProjectConfiguration.default(root_path))
+    def new(cls, root_path: Path) -> Project:
+        project = cls(ProjectConfiguration.default(root_path))
+        ProjectInitializer.initialize(project.project_configuration)
+        return project
 
     def __init__(self, project_configuration: ProjectConfiguration) -> None:
         self.project_configuration = project_configuration
-
-    def initialize(self) -> None:
-        assert (
-            not self.project_configuration.root_path.exists()
-        ), "Project root directory already exists"
-
-        self.project_configuration.root_path.mkdir()
-        self.project_configuration.source_directory.mkdir()
-        self.project_configuration.include_directory.mkdir()
-        self.project_configuration.test_directory.mkdir()
-
-        template_configuration_path = self.project_configuration.configuration_file
-        template_main_path = (
-            self.project_configuration.source_directory / self.TEMPLATE_MAIN_FILE_NAME
-        )
-        template_test_path = (
-            self.project_configuration.test_directory / self.TEMPLATE_TEST_FILE_NAME
-        )
-
-        template_configuration_path.write_text(Template.CONFIGURATION.read())
-        template_main_path.write_text(Template.MAIN.read())
-        template_test_path.write_text(Template.TEST.read())
 
     def build_object_file(
         self,
