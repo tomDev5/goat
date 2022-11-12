@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List
-from goat.raw_configuration.configuration_base import ConfigurationRoot
+from goat.configuration.configuration_root import ConfigurationRoot
 from toml import loads as toml_to_dict
 
 

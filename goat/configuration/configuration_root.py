@@ -1,8 +1,8 @@
 from typing import List
 from pydantic import BaseModel, Field
 
-from goat.raw_configuration.compilation_configuration import CompilationConfiguration
-from goat.raw_configuration.packages_configuration import PackagesConfiguration
+from goat.configuration.compilation_configuration import CompilationConfiguration
+from goat.configuration.packages_configuration import PackagesConfiguration
 
 
 class ConfigurationRoot(BaseModel):
