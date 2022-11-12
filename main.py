@@ -50,13 +50,13 @@ def main() -> None:
             build_project()
 
         case "test":
-            print(ProjectManager.from_path(Path("goat.toml")))
+            raise NotImplementedError()
 
         case "run":
-            print(ProjectManager.from_path(Path("goat.toml")))
+            raise NotImplementedError()
 
         case "clean":
-            print(ProjectManager.from_path(Path("goat.toml")))
+            raise NotImplementedError()
 
         case "new":
             new_project(arguments.name)
