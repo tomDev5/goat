@@ -7,17 +7,17 @@ Description: A C++ build system
 
 from argparse import ArgumentParser, Namespace, RawDescriptionHelpFormatter
 from pathlib import Path
-from goat.project.project_manager import ProjectManager
+from goat.project.project import Project
 
 
 def build_project() -> None:
-    project = ProjectManager.from_path(Path.cwd())
+    project = Project.from_path(Path.cwd())
     project.build()
 
 
 def new_project(name: str) -> None:
     root_path = Path.cwd() / name
-    ProjectManager.default(root_path).initialize()
+    Project.default(root_path).initialize()
 
 
 def parse_arguments() -> Namespace:
