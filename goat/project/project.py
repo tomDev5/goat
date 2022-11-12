@@ -63,7 +63,7 @@ class Project:
                 print(result.stderr)
                 return
 
-        binary_file = self.configuration.binary_directory / self.configuration.target
+        binary_file = self.configuration.binary_directory / self.configuration.binary
         print(f"Linking {binary_file}...")
 
         result = ProjectBuilder.link_binary_file(

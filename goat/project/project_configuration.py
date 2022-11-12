@@ -8,7 +8,7 @@ from toml import loads as toml_to_dict
 @dataclass
 class ProjectConfiguration:
     root_path: Path
-    target: str
+    binary: str
     compiler: str
     compiler_flags: list[str]
     include_paths: list[Path]
