@@ -9,7 +9,7 @@ class Project:
     configuration: ProjectConfiguration
 
     @classmethod
-    def load(cls, root_path: Path) -> Project:
+    def from_path(cls, root_path: Path) -> Project:
         configuration_path = root_path / ProjectConfiguration.CONFIGURATION_FILE_NAME
         configuration = ProjectConfiguration.from_path(
             root_path,

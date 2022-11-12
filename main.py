@@ -11,7 +11,7 @@ from goat.project.project import Project
 
 
 def build_project() -> None:
-    Project.load(Path.cwd()).build()
+    Project.from_path(Path.cwd()).build()
 
 
 def new_project(name: str) -> None:
