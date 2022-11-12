@@ -9,9 +9,6 @@ from goat.templates.template import Template
 class Project:
     project_configuration: ProjectConfiguration
 
-    TEMPLATE_MAIN_FILE_NAME = "main.cc"
-    TEMPLATE_TEST_FILE_NAME = "test.cc"
-
     @classmethod
     def load(cls, root_path: Path) -> Project:
         configuration_path = root_path / ProjectConfiguration.CONFIGURATION_FILE_NAME
