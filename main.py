@@ -18,6 +18,23 @@ def new_project(name: str) -> None:
     Project.new(Path.cwd() / name)
 
 
+def run_project() -> None:
+    project = Project.from_path(Path.cwd())
+    project.build()
+    project.run()
+
+
+def test_project() -> None:
+    project = Project.from_path(Path.cwd())
+    project.build(test=True)
+    project.run(test=True)
+
+
+def clean_project() -> None:
+    project = Project.from_path(Path.cwd())
+    project.clean()
+
+
 def parse_arguments() -> Namespace:
     argument_parser = ArgumentParser(
         description=__doc__,
@@ -50,8 +67,14 @@ def main() -> None:
         case "new":
             new_project(arguments.name)
 
-        case "test" | "run" | "clean":
-            raise NotImplementedError()
+        case "run":
+            run_project()
+
+        case "test":
+            test_project()
+
+        case "clean":
+            clean_project()
 
 
 if __name__ == "__main__":

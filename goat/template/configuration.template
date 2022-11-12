@@ -2,6 +2,6 @@
 TARGET = 'Application'
 CXX = 'g++'
 CXXFLAGS = ['-std=c++17', '-Wall', '-Werror', '-O3']
-INCLUDES = ['src', 'include']
+INCLUDES = []
 
 [packages]

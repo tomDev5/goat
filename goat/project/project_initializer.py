@@ -1,5 +1,5 @@
 from goat.project.project_configuration import ProjectConfiguration
-from goat.templates.template import Template
+from goat.template.template import Template
 
 
 class ProjectInitializer:
@@ -12,10 +12,10 @@ class ProjectInitializer:
             not configuration.root_path.exists()
         ), "Project root directory already exists"
 
-        configuration.root_path.mkdir()
-        configuration.source_directory.mkdir()
-        configuration.include_directory.mkdir()
-        configuration.test_directory.mkdir()
+        configuration.root_path.mkdir(parents=True)
+        configuration.source_directory.mkdir(parents=True)
+        configuration.include_directory.mkdir(parents=True)
+        configuration.test_directory.mkdir(parents=True)
 
         template_configuration_path = configuration.configuration_file
         template_main_path = (

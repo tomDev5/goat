@@ -73,3 +73,14 @@ class ProjectConfiguration:
     @property
     def binary_directory(self) -> Path:
         return self.build_directory / self.BINARY_DIRECTORY_NAME
+
+    @property
+    def binary_file(self) -> Path:
+        return self.binary_directory / self.binary
+
+    @property
+    def test_file(self) -> Path:
+        return self.binary_directory / f"{self.binary}_test"
+
+    def target_file(self, test: bool) -> Path:
+        return self.test_file if test else self.binary_file
