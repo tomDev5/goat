@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import List
 from pathlib import Path
 from goat.project.project_configuration import ProjectConfiguration
 from subprocess import CompletedProcess, run
@@ -13,17 +12,18 @@ class Project:
     TEMPLATE_TEST_FILE_NAME = "test.cc"
 
     @classmethod
-    def from_path(cls, root_path: Path) -> Project:
+    def load(cls, root_path: Path) -> Project:
         configuration_path = root_path / ProjectConfiguration.CONFIGURATION_FILE_NAME
         project_configuration = ProjectConfiguration.from_path(
             root_path,
             configuration_path,
         )
+
         return cls(project_configuration)
 
     @classmethod
     def default(cls, root_path: Path) -> Project:
-        return Project(ProjectConfiguration.default(root_path))
+        return cls(ProjectConfiguration.default(root_path))
 
     def __init__(self, project_configuration: ProjectConfiguration) -> None:
         self.project_configuration = project_configuration

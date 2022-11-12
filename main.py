@@ -8,10 +8,13 @@ Description: A C++ build system
 from argparse import ArgumentParser, Namespace, RawDescriptionHelpFormatter
 from pathlib import Path
 from goat.project.project import Project
+from goat.project.project_configuration import ProjectConfiguration
+from goat.raw_configuration.configuration_base import ConfigurationRoot
+from toml import loads as toml_to_dict
 
 
 def build_project() -> None:
-    project = Project.from_path(Path.cwd())
+    project = Project.load(Path.cwd())
     project.build()
 
 
@@ -49,17 +52,11 @@ def main() -> None:
         case "build":
             build_project()
 
-        case "test":
-            raise NotImplementedError()
-
-        case "run":
-            raise NotImplementedError()
-
-        case "clean":
-            raise NotImplementedError()
-
         case "new":
             new_project(arguments.name)
+
+        case "test" | "run" | "clean":
+            raise NotImplementedError()
 
 
 if __name__ == "__main__":

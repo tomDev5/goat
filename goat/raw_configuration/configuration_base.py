@@ -5,7 +5,7 @@ from goat.raw_configuration.compilation_configuration import CompilationConfigur
 from goat.raw_configuration.packages_configuration import PackagesConfiguration
 
 
-class ConfigurationBase(BaseModel):
+class ConfigurationRoot(BaseModel):
     compilation: CompilationConfiguration = Field(
         default_factory=CompilationConfiguration
     )
