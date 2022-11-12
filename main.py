@@ -5,34 +5,26 @@ Author: Tom Lubin
 Description: A C++ build system
 """
 
+from sys import stdout
+from loguru import logger
 from argparse import ArgumentParser, Namespace, RawDescriptionHelpFormatter
 from pathlib import Path
 from goat.project.project import Project
 
-
-def build_project() -> None:
-    Project.from_path(Path.cwd()).build()
+LOGGER_FORMAT = "[ {time:YYYY-MM-DD HH:mm:ss.SSS} ] | <level>{message}</level>"
 
 
-def new_project(name: str) -> None:
-    Project.new(Path.cwd() / name)
-
-
-def run_project() -> None:
-    project = Project.from_path(Path.cwd())
-    project.build()
-    project.run()
-
-
-def test_project() -> None:
-    project = Project.from_path(Path.cwd())
-    project.build(test=True)
-    project.run(test=True)
-
-
-def clean_project() -> None:
-    project = Project.from_path(Path.cwd())
-    project.clean()
+def setup_logger() -> None:
+    logger.remove()
+    logger.add(sink=stdout, format=LOGGER_FORMAT, level="TRACE")
+    logger.configure(
+        levels=[
+            dict(name="INFO", color="<white><bold>"),
+            dict(name="TRACE", color="<white>"),
+            dict(name="ERROR", color="<red><bold>"),
+            dict(name="SUCCESS", color="<green><bold>"),
+        ]
+    )
 
 
 def parse_arguments() -> Namespace:
@@ -58,23 +50,38 @@ def parse_arguments() -> Namespace:
 
 
 def main() -> None:
+    setup_logger()
     arguments = parse_arguments()
 
-    match arguments.subcommand:
-        case "build":
-            build_project()
+    try:
 
-        case "new":
-            new_project(arguments.name)
+        match arguments.subcommand:
+            case "build":
+                Project.from_path(Path.cwd()).build()
 
-        case "run":
-            run_project()
+            case "new":
+                Project.new(Path.cwd() / arguments.name)
 
-        case "test":
-            test_project()
+            case "run":
+                project = Project.from_path(Path.cwd())
+                project.build()
+                project.run()
 
-        case "clean":
-            clean_project()
+            case "test":
+                project = Project.from_path(Path.cwd())
+                project.build(test=True)
+                project.run(test=True)
+
+            case "clean":
+                project = Project.from_path(Path.cwd())
+                project.clean()
+
+    except Exception as exception:
+        logger.error(f"An error has occurred:")
+        print(exception)
+
+    else:
+        logger.success("Done")
 
 
 if __name__ == "__main__":
