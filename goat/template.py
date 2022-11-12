@@ -5,6 +5,7 @@ TEMPLATE_DIRECTORY = Path(__file__).parent / "templates"
 
 
 class Template(Enum):
+    CONFIGURATION = "configuration"
     MAIN = "main"
     TEST = "test"
 

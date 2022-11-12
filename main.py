@@ -17,7 +17,7 @@ def build_project() -> None:
 
 def new_project(name: str) -> None:
     root_path = Path.cwd() / name
-    Project.from_default_configuration(root_path).initialize()
+    Project.default(root_path).initialize()
 
 
 def parse_arguments() -> Namespace:
