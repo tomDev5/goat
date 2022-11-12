@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List
-from goat.configuration import Configuration
+from goat.raw_configuration.configuration_base import ConfigurationBase
 from toml import loads as toml_to_dict
 
 
@@ -24,11 +24,11 @@ class ProjectConfiguration:
 
     @classmethod
     def default(self, root_path: Path) -> ProjectConfiguration:
-        return ProjectConfiguration.from_configuration(root_path, Configuration())
+        return ProjectConfiguration.from_configuration(root_path, ConfigurationBase())
 
     @classmethod
     def from_configuration(
-        cls, root_path: Path, configuration: Configuration
+        cls, root_path: Path, configuration: ConfigurationBase
     ) -> ProjectConfiguration:
         return cls(
             root_path,
@@ -44,7 +44,7 @@ class ProjectConfiguration:
     ) -> ProjectConfiguration:
         return cls.from_configuration(
             root_path,
-            Configuration.parse_obj(toml_to_dict(configuration_path.read_text())),
+            ConfigurationBase.parse_obj(toml_to_dict(configuration_path.read_text())),
         )
 
     @property

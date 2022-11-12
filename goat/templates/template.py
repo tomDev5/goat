@@ -1,7 +1,7 @@
 from pathlib import Path
 from enum import Enum
 
-TEMPLATE_DIRECTORY = Path(__file__).parent / "templates"
+TEMPLATE_DIRECTORY = Path(__file__).parent
 
 
 class Template(Enum):

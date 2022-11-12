@@ -7,17 +7,17 @@ Description: A C++ build system
 
 from argparse import ArgumentParser, Namespace, RawDescriptionHelpFormatter
 from pathlib import Path
-from goat.project import Project
+from goat.project.project_manager import ProjectManager
 
 
 def build_project() -> None:
-    project = Project.from_path(Path.cwd())
+    project = ProjectManager.from_path(Path.cwd())
     project.build()
 
 
 def new_project(name: str) -> None:
     root_path = Path.cwd() / name
-    Project.default(root_path).initialize()
+    ProjectManager.default(root_path).initialize()
 
 
 def parse_arguments() -> Namespace:
@@ -50,13 +50,13 @@ def main() -> None:
             build_project()
 
         case "test":
-            print(Project.from_path(Path("goat.toml")))
+            print(ProjectManager.from_path(Path("goat.toml")))
 
         case "run":
-            print(Project.from_path(Path("goat.toml")))
+            print(ProjectManager.from_path(Path("goat.toml")))
 
         case "clean":
-            print(Project.from_path(Path("goat.toml")))
+            print(ProjectManager.from_path(Path("goat.toml")))
 
         case "new":
             new_project(arguments.name)
