@@ -19,8 +19,8 @@ def setup_logger() -> None:
     logger.add(sink=stdout, format=LOGGER_FORMAT, level="TRACE")
     logger.configure(
         levels=[
-            dict(name="INFO", color="<white><bold>"),
             dict(name="TRACE", color="<white>"),
+            dict(name="INFO", color="<white><bold>"),
             dict(name="ERROR", color="<red><bold>"),
             dict(name="SUCCESS", color="<green><bold>"),
         ]
