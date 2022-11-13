@@ -1,0 +1,7 @@
+[compilation]
+TARGET = 'Application'
+CXX = 'g++'
+CXXFLAGS = ['-std=c++17', '-Wall', '-Werror', '-O3']
+INCLUDES = []
+
+[packages]
