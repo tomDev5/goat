@@ -1,0 +1,17 @@
+[project]
+name = "goat"
+description = "C/C++ package manager"
+version = "0.1.0"
+authors = [
+    { name = "Tom Lubin", email = "tom@lubin.ws" },
+    { name = "Omer Lubin", email = "omer@lubin.ws" },
+    { name = "Denis Bucharskyy", email = "alotzost@gmail.com" },
+]
+dependencies = [
+    "pydantic",
+    "loguru",
+    "toml",
+]
+
+[project.scripts]
+goat = "goat.entry:entry"

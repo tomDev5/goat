@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Author: Tom Lubin
-Description: A C++ build system
+C/C++ build system.
 """
 
 from sys import stdout
@@ -49,7 +48,7 @@ def parse_arguments() -> Namespace:
     return argument_parser.parse_args()
 
 
-def main() -> None:
+def entry() -> None:
     setup_logger()
     arguments = parse_arguments()
 
@@ -57,7 +56,8 @@ def main() -> None:
 
         match arguments.subcommand:
             case "build":
-                Project.from_path(Path.cwd()).build()
+                project = Project.from_path(Path.cwd())
+                project.build()
 
             case "new":
                 Project.new(Path.cwd() / arguments.name)
@@ -82,7 +82,3 @@ def main() -> None:
 
     else:
         logger.success("Done")
-
-
-if __name__ == "__main__":
-    main()
