@@ -3,17 +3,20 @@ from dataclasses import dataclass
 from pathlib import Path
 from goat.configuration.configuration import Configuration
 from toml import loads as toml_to_dict
-from goat.project.project_configuration_values import ProjectConfigurationValues
+from goat.project.project_configuration_entry import ProjectConfigurationEntry
 from goat.project.build_mode import BuildMode
+from goat.project.project_configuration_entry_factory import (
+    ProjectConfigurationEntryFactory,
+)
 from goat.project.project_path_resolver import ProjectPathResolver
 
 
 @dataclass
 class ProjectConfiguration:
     path_resolver: ProjectPathResolver
-    release_configuration: ProjectConfigurationValues
-    debug_configuration: ProjectConfigurationValues
-    test_configuration: ProjectConfigurationValues
+    release_configuration: ProjectConfigurationEntry
+    debug_configuration: ProjectConfigurationEntry
+    test_configuration: ProjectConfigurationEntry
 
     CONFIGURATION_FILE_NAME = "goat.toml"
     SOURCE_DIRECTORY_NAME = "source"
@@ -41,17 +44,19 @@ class ProjectConfiguration:
         path_resolver: ProjectPathResolver,
         configuration: Configuration,
     ) -> ProjectConfiguration:
-        release = ProjectConfigurationValues(configuration, BuildMode.RELEASE)
-        debug = ProjectConfigurationValues(configuration, BuildMode.DEBUG)
-        test = ProjectConfigurationValues(configuration, BuildMode.TEST)
+        release = ProjectConfigurationEntryFactory.create(
+            configuration, BuildMode.RELEASE
+        )
+        debug = ProjectConfigurationEntryFactory.create(configuration, BuildMode.DEBUG)
+        test = ProjectConfigurationEntryFactory.create(configuration, BuildMode.TEST)
         return cls(path_resolver, release, debug, test)
 
     def __init__(
         self,
         path_resolver: ProjectPathResolver,
-        release_configuration: ProjectConfigurationValues,
-        debug_configuration: ProjectConfigurationValues,
-        test_configuration: ProjectConfigurationValues,
+        release_configuration: ProjectConfigurationEntry,
+        debug_configuration: ProjectConfigurationEntry,
+        test_configuration: ProjectConfigurationEntry,
     ) -> None:
         self.path_resolver = path_resolver
         self.release_configuration = release_configuration
@@ -61,7 +66,7 @@ class ProjectConfiguration:
     def configuration(
         self,
         build_mode: BuildMode,
-    ) -> ProjectConfigurationValues:
+    ) -> ProjectConfigurationEntry:
         match build_mode:
             case BuildMode.RELEASE:
                 return self.release_configuration

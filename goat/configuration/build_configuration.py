@@ -1,11 +1,11 @@
 from pydantic import BaseModel
-from goat.configuration.build_configuration_values import (
-    BuildConfigurationValues,
+from goat.configuration.build_configuration_entry import (
+    BuildConfigurationEntry,
 )
 
 
 class BuildConfiguration(BaseModel):
-    all: BuildConfigurationValues
-    release: BuildConfigurationValues
-    debug: BuildConfigurationValues
-    test: BuildConfigurationValues
+    all: BuildConfigurationEntry
+    release: BuildConfigurationEntry
+    debug: BuildConfigurationEntry
+    test: BuildConfigurationEntry

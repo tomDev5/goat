@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 
-class BuildConfigurationValues(BaseModel):
+class BuildConfigurationEntry(BaseModel):
     target: str | None = None
     linker: str | None = None
     linker_flags: list[str] = Field(default_factory=list)
