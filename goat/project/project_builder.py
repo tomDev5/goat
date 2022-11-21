@@ -14,16 +14,13 @@ class ProjectBuilder:
         self.configuration = configuration
 
     def build_target_file(self, build_mode: BuildMode) -> None:
-        self.path_resolver.build_directory.mkdir(parents=True, exist_ok=True)
-        self.path_resolver.object_directory.mkdir(parents=True, exist_ok=True)
-        self.path_resolver.binary_directory.mkdir(parents=True, exist_ok=True)
-
         object_mapping = self.get_object_mapping(build_mode)
 
         for source_file, object_file in object_mapping.items():
             object_file.parent.mkdir(parents=True, exist_ok=True)
             self.compile_object_file(source_file, object_file, build_mode)
 
+        self.configuration.target(build_mode).parent.mkdir(parents=True, exist_ok=True)
         self.link_object_files(list(object_mapping.values()), build_mode)
 
     def compile_object_file(

@@ -33,7 +33,8 @@ def add_mode_arguments(subparser: ArgumentParser) -> None:
     group.add_argument(
         "--mode",
         help=f"Select the configuration to use",
-        choices=BuildMode,
+        type=BuildMode,
+        choices=list(BuildMode),
         default=BuildMode.RELEASE,
     )
 
