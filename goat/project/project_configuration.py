@@ -82,8 +82,6 @@ class ProjectConfiguration:
             case BuildMode.TEST:
                 return self.test_configuration
 
-        raise Exception("Invalid build mode")
-
     def target(self, build_mode: BuildMode) -> Path:
         name = self.configuration(build_mode).target
         return self.path_resolver.binary_directory / name
