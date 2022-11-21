@@ -1,74 +1,74 @@
 from pathlib import Path
 from goat.configuration.configuration import Configuration
 from goat.project.build_mode import BuildMode
-from goat.project.project_configuration_entry import ProjectConfigurationEntry
+from goat.project.project_configuration_variant import ProjectConfigurationVariant
 
 
-class ProjectConfigurationEntryFactory:
+class ProjectConfigurationVariantFactory:
     @staticmethod
     def create(
         configuration: Configuration,
         build_mode: BuildMode,
-    ) -> ProjectConfigurationEntry:
+    ) -> ProjectConfigurationVariant:
         match build_mode:
             case BuildMode.RELEASE:
-                configuration_entry = configuration.build.release
+                configuration_variant = configuration.build.release
 
             case BuildMode.DEBUG:
-                configuration_entry = configuration.build.debug
+                configuration_variant = configuration.build.debug
 
             case BuildMode.TEST:
-                configuration_entry = configuration.build.test
+                configuration_variant = configuration.build.test
 
-        target = configuration_entry.target or configuration.build.all.target
+        target = configuration_variant.target or configuration.build.all.target
         if target is None:
             raise Exception(f"'target' is missing for {build_mode.name}")
 
-        linker = configuration_entry.linker or configuration.build.all.linker
+        linker = configuration_variant.linker or configuration.build.all.linker
         if linker is None:
             raise Exception(f"'linker' is missing for {build_mode.name}")
 
         linker_flags = [
             *configuration.build.all.linker_flags,
-            *configuration_entry.linker_flags,
+            *configuration_variant.linker_flags,
         ]
 
         library_paths = [
             Path(string)
             for string in (
                 *configuration.build.all.library_paths,
-                *configuration_entry.library_paths,
+                *configuration_variant.library_paths,
             )
         ]
 
         libraries = [
             *configuration.build.all.libraries,
-            *configuration_entry.libraries,
+            *configuration_variant.libraries,
         ]
 
-        compiler = configuration_entry.compiler or configuration.build.all.compiler
+        compiler = configuration_variant.compiler or configuration.build.all.compiler
         if compiler is None:
             raise Exception(f"'compiler' is missing for {build_mode.name}")
 
         compiler_flags = [
             *configuration.build.all.compiler_flags,
-            *configuration_entry.compiler_flags,
+            *configuration_variant.compiler_flags,
         ]
 
         include_paths = [
             Path(string)
             for string in (
                 *configuration.build.all.include_paths,
-                *configuration_entry.include_paths,
+                *configuration_variant.include_paths,
             )
         ]
 
         defines = [
             *configuration.build.all.defines,
-            *configuration_entry.defines,
+            *configuration_variant.defines,
         ]
 
-        return ProjectConfigurationEntry(
+        return ProjectConfigurationVariant(
             target,
             linker,
             linker_flags,
