@@ -1,34 +1,26 @@
-[linkage]
+[build.all]
 linker = "g++"
 linker_flags = []
 library_paths = []
 libraries = []
-
-[linkage.release]
-target = "application"
-
-[linkage.debug]
-target = "application_debug"
-
-[linkage.test]
-target = "application_test"
-libraries = ["gtest", "gtest_main", "pthread"]
-
-[compilation]
 compiler = "g++"
 compiler_flags = ["-std=c++17", "-Wall", "-Werror"]
 include_paths = []
 defines = []
 
-[compilation.release]
+[build.release]
+target = "application"
 compiler_flags = ["-O3"]
 defines = ["RELEASE"]
 
-[compilation.debug]
+[build.debug]
+target = "application_debug"
 compiler_flags = ["-Og"]
 defines = ["DEBUG"]
 
-[compilation.test]
+[build.test]
+target = "application_test"
+libraries = ["gtest", "gtest_main", "pthread"]
 compiler_flags = ["-Og"]
 defines = ["DEBUG", "TEST"]
 

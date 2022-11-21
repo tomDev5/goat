@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.scripts]
-goat = "goat.entry:entry"
+goat = "goat.main:main"
 
 [tool.setuptools.package-data]
 "goat.template" = ["*.template"]

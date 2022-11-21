@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """
 C/C++ build system.
 """
@@ -70,7 +68,7 @@ def parse_arguments() -> Namespace:
     return argument_parser.parse_args()
 
 
-def entry() -> int:
+def main() -> int:
     setup_logger()
     arguments = parse_arguments()
 
@@ -103,4 +101,4 @@ def entry() -> int:
 
 
 if __name__ == "__main__":
-    entry()
+    main()
