@@ -1,17 +1,23 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
-from goat.configuration.configuration_root import ConfigurationRoot
+from goat.configuration.compilation_configuration_values import (
+    CompilationConfigurationValues,
+)
+from goat.configuration.configuration import Configuration
 from toml import loads as toml_to_dict
+from goat.configuration.linkage_configuration_values import LinkageConfigurationValues
+from goat.project.project_configuration_values import ProjectConfigurationValues
+from goat.project.build_mode import BuildMode
+from goat.project.project_path_resolver import ProjectPathResolver
 
 
 @dataclass
 class ProjectConfiguration:
-    root_path: Path
-    binary: str
-    compiler: str
-    compiler_flags: list[str]
-    include_paths: list[Path]
+    path_resolver: ProjectPathResolver
+    release_configuration: ProjectConfigurationValues
+    debug_configuration: ProjectConfigurationValues
+    test_configuration: ProjectConfigurationValues
 
     CONFIGURATION_FILE_NAME = "goat.toml"
     SOURCE_DIRECTORY_NAME = "source"
@@ -22,65 +28,86 @@ class ProjectConfiguration:
     BINARY_DIRECTORY_NAME = "binary"
 
     @classmethod
-    def default(self, root_path: Path) -> ProjectConfiguration:
-        return ProjectConfiguration.from_configuration(root_path, ConfigurationRoot())
+    def from_path(
+        cls,
+        root_path: Path,
+        configuration_path: Path,
+    ) -> ProjectConfiguration:
+        configuration_dict = toml_to_dict(configuration_path.read_text())
+        return cls.from_configuration(
+            ProjectPathResolver(root_path),
+            Configuration.parse_obj(configuration_dict),
+        )
 
     @classmethod
     def from_configuration(
-        cls, root_path: Path, configuration: ConfigurationRoot
+        cls,
+        path_resolver: ProjectPathResolver,
+        configuration: Configuration,
     ) -> ProjectConfiguration:
+        release = ProjectConfigurationValues(configuration, BuildMode.RELEASE)
+        debug = ProjectConfigurationValues(configuration, BuildMode.DEBUG)
+        test = ProjectConfigurationValues(configuration, BuildMode.TEST)
+
         return cls(
-            root_path,
-            configuration.compilation.TARGET,
-            configuration.compilation.CXX,
-            configuration.compilation.CXX_FLAGS,
-            [Path(include_path) for include_path in configuration.compilation.INCLUDES],
+            path_resolver,
+            release,
+            debug,
+            test,
         )
 
-    @classmethod
-    def from_path(
-        cls, root_path: Path, configuration_path: Path
-    ) -> ProjectConfiguration:
-        return cls.from_configuration(
-            root_path,
-            ConfigurationRoot.parse_obj(toml_to_dict(configuration_path.read_text())),
-        )
+    def __init__(
+        self,
+        path_resolver: ProjectPathResolver,
+        release_configuration: ProjectConfigurationValues,
+        debug_configuration: ProjectConfigurationValues,
+        test_configuration: ProjectConfigurationValues,
+    ) -> None:
+        self.path_resolver = path_resolver
+        self.release_configuration = release_configuration
+        self.debug_configuration = debug_configuration
+        self.test_configuration = test_configuration
 
-    @property
-    def configuration_file(self) -> Path:
-        return self.root_path / self.CONFIGURATION_FILE_NAME
+    def configuration(
+        self,
+        build_mode: BuildMode,
+    ) -> ProjectConfigurationValues:
+        match build_mode:
+            case BuildMode.RELEASE:
+                return self.release_configuration
 
-    @property
-    def source_directory(self) -> Path:
-        return self.root_path / self.SOURCE_DIRECTORY_NAME
+            case BuildMode.DEBUG:
+                return self.debug_configuration
 
-    @property
-    def include_directory(self) -> Path:
-        return self.root_path / self.INCLUDE_DIRECTORY_NAME
+            case BuildMode.TEST:
+                return self.test_configuration
 
-    @property
-    def test_directory(self) -> Path:
-        return self.root_path / self.TEST_DIRECTORY_NAME
+        raise Exception("Invalid build mode")
 
-    @property
-    def build_directory(self) -> Path:
-        return self.root_path / self.BUILD_DIRECTORY_NAME
+    def target(self, build_mode: BuildMode) -> Path:
+        name = self.configuration(build_mode).target
+        return self.path_resolver.binary_directory / name
 
-    @property
-    def object_directory(self) -> Path:
-        return self.build_directory / self.OBJECT_DIRECTORY_NAME
+    def compiler(self, build_mode: BuildMode) -> str:
+        return self.configuration(build_mode).compiler
 
-    @property
-    def binary_directory(self) -> Path:
-        return self.build_directory / self.BINARY_DIRECTORY_NAME
+    def include_paths(self, build_mode: BuildMode) -> list[Path]:
+        return self.configuration(build_mode).include_paths
 
-    @property
-    def binary_file(self) -> Path:
-        return self.binary_directory / self.binary
+    def compiler_flags(self, build_mode: BuildMode) -> list[str]:
+        return self.configuration(build_mode).compiler_flags
 
-    @property
-    def test_file(self) -> Path:
-        return self.binary_directory / f"{self.binary}_test"
+    def defines(self, build_mode: BuildMode) -> list[str]:
+        return self.configuration(build_mode).defines
 
-    def target_file(self, test: bool) -> Path:
-        return self.test_file if test else self.binary_file
+    def linker(self, build_mode: BuildMode) -> str:
+        return self.configuration(build_mode).linker
+
+    def linker_flags(self, build_mode: BuildMode) -> list[str]:
+        return self.configuration(build_mode).linker_flags
+
+    def library_paths(self, build_mode: BuildMode) -> list[Path]:
+        return self.configuration(build_mode).library_paths
+
+    def libraries(self, build_mode: BuildMode) -> list[str]:
+        return self.configuration(build_mode).libraries

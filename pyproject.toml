@@ -16,3 +16,6 @@ dependencies = [
 
 [project.scripts]
 goat = "goat.entry:entry"
+
+[tool.setuptools.package-data]
+"goat.template" = ["*.template"]

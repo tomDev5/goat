@@ -1,8 +1,9 @@
-from pydantic import BaseModel, Field
+from goat.configuration.compilation_configuration_values import (
+    CompilationConfigurationValues,
+)
 
 
-class CompilationConfiguration(BaseModel):
-    TARGET: str = "Application"
-    CXX: str = "g++"
-    CXX_FLAGS: list[str] = Field(default_factory=list)
-    INCLUDES: list[str] = Field(default_factory=list)
+class CompilationConfiguration(CompilationConfigurationValues):
+    release: CompilationConfigurationValues
+    debug: CompilationConfigurationValues
+    test: CompilationConfigurationValues
