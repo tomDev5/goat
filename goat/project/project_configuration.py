@@ -44,13 +44,7 @@ class ProjectConfiguration:
         release = ProjectConfigurationValues(configuration, BuildMode.RELEASE)
         debug = ProjectConfigurationValues(configuration, BuildMode.DEBUG)
         test = ProjectConfigurationValues(configuration, BuildMode.TEST)
-
-        return cls(
-            path_resolver,
-            release,
-            debug,
-            test,
-        )
+        return cls(path_resolver, release, debug, test)
 
     def __init__(
         self,
