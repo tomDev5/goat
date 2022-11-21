@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 @dataclass
-class ProjectConfigurationEntry:
+class ProjectConfigurationVariant:
     target: str
     linker: str
     linker_flags: list[str]

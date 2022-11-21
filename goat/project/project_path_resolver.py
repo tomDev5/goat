@@ -16,29 +16,29 @@ class ProjectPathResolver:
         self.root_path = root_path
 
     @property
-    def configuration_file(this) -> Path:
-        return this.root_path / this.CONFIGURATION_FILE_NAME
+    def configuration_file(self) -> Path:
+        return self.root_path / self.CONFIGURATION_FILE_NAME
 
     @property
-    def source_directory(this) -> Path:
-        return this.root_path / this.SOURCE_DIRECTORY_NAME
+    def source_directory(self) -> Path:
+        return self.root_path / self.SOURCE_DIRECTORY_NAME
 
     @property
-    def include_directory(this) -> Path:
-        return this.root_path / this.INCLUDE_DIRECTORY_NAME
+    def include_directory(self) -> Path:
+        return self.root_path / self.INCLUDE_DIRECTORY_NAME
 
     @property
-    def test_directory(this) -> Path:
-        return this.root_path / this.TEST_DIRECTORY_NAME
+    def test_directory(self) -> Path:
+        return self.root_path / self.TEST_DIRECTORY_NAME
 
     @property
-    def build_directory(this) -> Path:
-        return this.root_path / this.BUILD_DIRECTORY_NAME
+    def build_directory(self) -> Path:
+        return self.root_path / self.BUILD_DIRECTORY_NAME
 
     @property
-    def object_directory(this) -> Path:
-        return this.build_directory / this.OBJECT_DIRECTORY_NAME
+    def object_directory(self) -> Path:
+        return self.build_directory / self.OBJECT_DIRECTORY_NAME
 
     @property
-    def binary_directory(this) -> Path:
-        return this.build_directory / this.BINARY_DIRECTORY_NAME
+    def binary_directory(self) -> Path:
+        return self.build_directory / self.BINARY_DIRECTORY_NAME

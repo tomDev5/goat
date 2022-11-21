@@ -8,9 +8,8 @@ class ProjectInitializer:
 
     @classmethod
     def initialize(cls, path_resolver: ProjectPathResolver):
-        assert (
-            not path_resolver.root_path.exists()
-        ), "Project root directory already exists"
+        if path_resolver.root_path.exists():
+            raise Exception("Project root directory already exists")
 
         path_resolver.root_path.mkdir(parents=True)
         path_resolver.source_directory.mkdir(parents=True)
