@@ -1,36 +1,48 @@
 from pathlib import Path
-from subprocess import PIPE, CompletedProcess, run
-
+from subprocess import PIPE, run
 from loguru import logger
+from goat.project.build_mode import BuildMode
 from goat.project.project_configuration import ProjectConfiguration
+from goat.project.project_path_resolver import ProjectPathResolver
 
 
 class ProjectBuilder:
+    configuration: ProjectConfiguration
 
-    TEST_MACROS = ["TEST"]
-    TEST_LINK_LIBRARIES = ["gtest", "gtest_main", "pthread"]
+    def __init__(self, configuration: ProjectConfiguration) -> None:
+        self.configuration = configuration
 
-    @staticmethod
-    def include_flags(configuration: ProjectConfiguration) -> list[str]:
-        return [
+    def build_target_file(self, build_mode: BuildMode) -> None:
+        object_mapping = self.get_object_mapping(build_mode)
+
+        for source_file, object_file in object_mapping.items():
+            object_file.parent.mkdir(parents=True, exist_ok=True)
+            self.compile_object_file(source_file, object_file, build_mode)
+
+        self.configuration.target(build_mode).parent.mkdir(parents=True, exist_ok=True)
+        self.link_object_files(list(object_mapping.values()), build_mode)
+
+    def compile_object_file(
+        self,
+        source_file: Path,
+        object_file: Path,
+        build_mode: BuildMode,
+    ) -> None:
+        logger.trace(
+            f"Compiling {source_file.relative_to(self.path_resolver.root_path)}"
+        )
+
+        include_paths = [
             f"-I{include_path}"
             for include_path in (
-                configuration.include_paths + [configuration.include_directory]
+                self.configuration.include_paths(build_mode)
+                + [self.path_resolver.include_directory]
             )
         ]
 
-    @classmethod
-    def compiler_flags(
-        cls,
-        configuration: ProjectConfiguration,
-        object_file: Path,
-        test: bool = False,
-    ) -> list[str]:
-        test_compiler_flags = [f"-D{macro}" for macro in cls.TEST_MACROS]
-
-        return (
-            (test_compiler_flags if test else [])
-            + configuration.compiler_flags
+        compiler_flags = (
+            self.configuration.compiler_flags(build_mode)
+            + [f"-D{define}" for define in self.configuration.defines(build_mode)]
             + [
                 "-c",
                 "-o",
@@ -38,121 +50,74 @@ class ProjectBuilder:
             ]
         )
 
-    @classmethod
-    def linker_flags(
-        cls,
-        configuration: ProjectConfiguration,
-        test: bool,
-    ) -> list[str]:
-        test_linker_flags = [f"-l{library}" for library in cls.TEST_LINK_LIBRARIES]
-        return (test_linker_flags if test else []) + [
-            "-o",
-            str(configuration.target_file(test)),
-        ]
-
-    @classmethod
-    def compile_object_file(
-        cls,
-        configuration: ProjectConfiguration,
-        source_file: Path,
-        object_file: Path,
-        test: bool = False,
-    ) -> None:
-        logger.trace(f"Compiling {source_file.relative_to(configuration.root_path)}")
-
-        include_flags = cls.include_flags(configuration)
-        compiler_flags = cls.compiler_flags(configuration, object_file, test)
         result = run(
-            [configuration.compiler, str(source_file), *include_flags, *compiler_flags],
+            [
+                self.configuration.compiler(build_mode),
+                source_file,
+                *include_paths,
+                *compiler_flags,
+            ],
             stderr=PIPE,
             text=True,
         )
+
         if result.returncode != 0:
             raise Exception(result.stderr)
 
-    @classmethod
-    def link_target_file(
-        cls,
-        configuration: ProjectConfiguration,
+    def link_object_files(
+        self,
         object_files: list[Path],
-        test: bool,
+        build_mode: BuildMode,
     ) -> None:
         logger.trace(
-            f"Linking {configuration.target_file(test).relative_to(configuration.root_path)}"
+            f"Linking {self.configuration.target(build_mode).relative_to(self.path_resolver.root_path)}"
         )
 
-        linker_flags = cls.linker_flags(configuration, test)
-        object_files_str = list(map(str, object_files))
+        library_paths = self.configuration.library_paths(build_mode)
+
+        linker_flags = (
+            self.configuration.linker_flags(build_mode)
+            + [f"-l{library}" for library in self.configuration.libraries(build_mode)]
+            + [
+                "-o",
+                str(self.configuration.target(build_mode)),
+            ]
+        )
+
         result = run(
-            [configuration.compiler, *object_files_str, *linker_flags],
+            [
+                self.configuration.linker(build_mode),
+                *object_files,
+                *library_paths,
+                *linker_flags,
+            ],
             stderr=PIPE,
             text=True,
         )
+
         if result.returncode != 0:
             raise Exception(result.stderr)
 
-    @classmethod
-    def get_binary_object_mapping(
-        cls,
-        configuration: ProjectConfiguration,
-    ) -> dict[Path, Path]:
-        binary_source_files = list(configuration.source_directory.glob("**/*.cc"))
-        return cls.get_object_mapping(configuration, binary_source_files)
-
-    @classmethod
-    def get_test_object_mapping(
-        cls,
-        configuration: ProjectConfiguration,
-    ) -> dict[Path, Path]:
-        test_source_files = list(configuration.test_directory.glob("**/*.cc"))
-        return cls.get_object_mapping(configuration, test_source_files)
-
-    @classmethod
-    def get_object_mapping(
-        cls,
-        configuration: ProjectConfiguration,
-        source_files: list[Path],
-    ) -> dict[Path, Path]:
+    def get_object_mapping(self, build_mode: BuildMode) -> dict[Path, Path]:
         object_mapping: dict[Path, Path] = {}
 
-        for source_file in source_files:
-            relative_source_file = source_file.relative_to(configuration.root_path)
-
-            object_file = (
-                configuration.object_directory
-                / relative_source_file.parent
-                / f"{relative_source_file.name}.o"
-            )
-
+        for source_file in self.get_source_files(build_mode):
+            relative_source_file = source_file.relative_to(self.path_resolver.root_path)
+            object_file_name = f"{relative_source_file.stem}.o"
+            relative_object_file = relative_source_file.parent / object_file_name
+            object_file = self.path_resolver.object_directory / relative_object_file
             object_mapping[source_file] = object_file
 
         return object_mapping
 
-    @classmethod
-    def build_target_file(
-        cls,
-        configuration: ProjectConfiguration,
-        test: bool = False,
-    ) -> None:
-        configuration.build_directory.mkdir(parents=True, exist_ok=True)
-        configuration.object_directory.mkdir(parents=True, exist_ok=True)
-        configuration.binary_directory.mkdir(parents=True, exist_ok=True)
+    def get_source_files(self, build_mode: BuildMode) -> list[Path]:
+        files = list(self.path_resolver.source_directory.glob("**/*.cc"))
 
-        object_mapping = cls.get_binary_object_mapping(configuration)
-        if test:
-            object_mapping |= cls.get_test_object_mapping(configuration)
+        if build_mode == BuildMode.TEST:
+            files.extend(self.path_resolver.test_directory.glob("**/*.cc"))
 
-        for source_file, object_file in object_mapping.items():
-            object_file.parent.mkdir(parents=True, exist_ok=True)
-            cls.compile_object_file(
-                configuration,
-                source_file,
-                object_file,
-                test,
-            )
+        return files
 
-        cls.link_target_file(
-            configuration,
-            list(object_mapping.values()),
-            test,
-        )
+    @property
+    def path_resolver(self) -> ProjectPathResolver:
+        return self.configuration.path_resolver

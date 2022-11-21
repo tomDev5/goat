@@ -1,7 +1,27 @@
-[compilation]
-TARGET = 'Application'
-CXX = 'g++'
-CXXFLAGS = ['-std=c++17', '-Wall', '-Werror', '-O3']
-INCLUDES = []
+[build.all]
+linker = "g++"
+linker_flags = []
+library_paths = []
+libraries = []
+compiler = "g++"
+compiler_flags = ["-std=c++17", "-Wall", "-Werror"]
+include_paths = []
+defines = []
+
+[build.release]
+target = "application"
+compiler_flags = ["-O3"]
+defines = ["RELEASE"]
+
+[build.debug]
+target = "application_debug"
+compiler_flags = ["-Og"]
+defines = ["DEBUG"]
+
+[build.test]
+target = "application_test"
+libraries = ["gtest", "gtest_main", "pthread"]
+compiler_flags = ["-Og"]
+defines = ["DEBUG", "TEST"]
 
 [packages]

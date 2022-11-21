@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """
 C/C++ build system.
 """
@@ -8,6 +6,7 @@ from sys import stdout
 from loguru import logger
 from argparse import ArgumentParser, Namespace, RawDescriptionHelpFormatter
 from pathlib import Path
+from goat.project.build_mode import BuildMode
 from goat.project.project import Project
 
 LOGGER_FORMAT = "[ {time:YYYY-MM-DD HH:mm:ss.SSS} ] | <level>{message}</level>"
@@ -26,6 +25,27 @@ def setup_logger() -> None:
     )
 
 
+def add_mode_arguments(subparser: ArgumentParser) -> None:
+    group = subparser.add_mutually_exclusive_group()
+
+    group.add_argument(
+        "--mode",
+        help=f"Select the configuration to use",
+        type=BuildMode,
+        choices=list(BuildMode),
+        default=BuildMode.RELEASE,
+    )
+
+    for mode in BuildMode:
+        group.add_argument(
+            f"--{mode}",
+            action="store_const",
+            const=mode,
+            dest="mode",
+            help=f"Use the {mode} configuration",
+        )
+
+
 def parse_arguments() -> Namespace:
     argument_parser = ArgumentParser(
         description=__doc__,
@@ -34,11 +54,11 @@ def parse_arguments() -> Namespace:
 
     subparsers = argument_parser.add_subparsers(dest="subcommand", required=True)
 
-    subparsers.add_parser("build", help="Build the current project")
+    build_parser = subparsers.add_parser("build", help="Build the current project")
+    add_mode_arguments(build_parser)
 
-    subparsers.add_parser("test", help="Test the current project")
-
-    subparsers.add_parser("run", help="Run the current project")
+    run_subparser = subparsers.add_parser("run", help="Run the current project")
+    add_mode_arguments(run_subparser)
 
     subparsers.add_parser("clean", help="Clean all built artifacts")
 
@@ -48,29 +68,23 @@ def parse_arguments() -> Namespace:
     return argument_parser.parse_args()
 
 
-def entry() -> None:
+def main() -> int:
     setup_logger()
     arguments = parse_arguments()
 
     try:
-
         match arguments.subcommand:
             case "build":
                 project = Project.from_path(Path.cwd())
-                project.build()
+                project.build(arguments.mode)
 
             case "new":
                 Project.new(Path.cwd() / arguments.name)
 
             case "run":
                 project = Project.from_path(Path.cwd())
-                project.build()
-                project.run()
-
-            case "test":
-                project = Project.from_path(Path.cwd())
-                project.build(test=True)
-                project.run(test=True)
+                project.build(arguments.mode)
+                project.run(arguments.mode)
 
             case "clean":
                 project = Project.from_path(Path.cwd())
@@ -78,7 +92,13 @@ def entry() -> None:
 
     except Exception as exception:
         logger.error(f"An error has occurred:")
-        print(exception)
+        logger.exception(exception)
+        return 1
 
     else:
         logger.success("Done")
+        return 0
+
+
+if __name__ == "__main__":
+    main()
