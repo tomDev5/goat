@@ -1,12 +1,8 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
-from goat.configuration.compilation_configuration_values import (
-    CompilationConfigurationValues,
-)
 from goat.configuration.configuration import Configuration
 from toml import loads as toml_to_dict
-from goat.configuration.linkage_configuration_values import LinkageConfigurationValues
 from goat.project.project_configuration_values import ProjectConfigurationValues
 from goat.project.build_mode import BuildMode
 from goat.project.project_path_resolver import ProjectPathResolver

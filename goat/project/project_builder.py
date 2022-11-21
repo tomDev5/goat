@@ -1,6 +1,5 @@
 from pathlib import Path
-from subprocess import PIPE, CompletedProcess, run
-
+from subprocess import PIPE, run
 from loguru import logger
 from goat.project.build_mode import BuildMode
 from goat.project.project_configuration import ProjectConfiguration
