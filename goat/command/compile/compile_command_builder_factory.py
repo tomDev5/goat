@@ -1,4 +1,4 @@
-from goat.command.compile_command_builder import CompileCommandBuilder
+from goat.command.compile.compile_command_builder import CompileCommandBuilder
 
 
 class CompileCommandBuilderFactory:

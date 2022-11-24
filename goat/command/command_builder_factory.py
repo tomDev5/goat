@@ -1,9 +1,11 @@
 from typing import Literal, overload
 from goat.command.command_type import CommandType
-from goat.command.compile_command_builder import CompileCommandBuilder
-from goat.command.compile_command_builder_factory import CompileCommandBuilderFactory
-from goat.command.link_command_builder import LinkCommandBuilder
-from goat.command.link_command_builder_factory import LinkCommandBuilderFactory
+from goat.command.compile.compile_command_builder import CompileCommandBuilder
+from goat.command.compile.compile_command_builder_factory import (
+    CompileCommandBuilderFactory,
+)
+from goat.command.link.link_command_builder import LinkCommandBuilder
+from goat.command.link.link_command_builder_factory import LinkCommandBuilderFactory
 
 
 class CommandBuilderFactory:

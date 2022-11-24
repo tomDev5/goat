@@ -1,4 +1,4 @@
-from goat.command.link_command_builder import LinkCommandBuilder
+from goat.command.link.link_command_builder import LinkCommandBuilder
 
 
 class LinkCommandBuilderFactory:
