@@ -1,14 +1,17 @@
 from pathlib import Path
 from subprocess import PIPE, run
 from loguru import logger
-from goat.command.builder.command_builder_factory import CommandBuilderFactory
+from goat.command.build_command.builder.command_builder_factory import (
+    CommandBuilderFactory,
+)
+from goat.command.command_runner import CommandRunner
 from goat.project.build_mode import BuildMode
 from goat.project.configuration.project_configuration import ProjectConfiguration
 from goat.project.project_path_resolver import ProjectPathResolver
-from goat.command.parameters.compile_parameters_builder import (
+from goat.command.build_command.parameters.compile_parameters_builder import (
     CompileParametersBuilder,
 )
-from goat.command.parameters.link_parameters_builder import (
+from goat.command.build_command.parameters.link_parameters_builder import (
     LinkParametersBuilder,
 )
 
@@ -64,9 +67,9 @@ class ProjectBuilder:
             compile_parameters
         )
 
-        result = run(command.to_list(), stderr=PIPE, text=True)
-        if result.returncode != 0:
-            raise Exception(result.stderr)
+        command_results = CommandRunner.run(command)
+        if command_results.failure:
+            raise Exception(command_results.standard_error)
 
     def link_object_files(
         self,
