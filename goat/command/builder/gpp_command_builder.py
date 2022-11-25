@@ -6,8 +6,8 @@ from goat.command.configuration.link_configuration import LinkConfiguration
 
 
 class GPPCommandBuilder(CommandBuilder):
-    @classmethod
-    def build_compile(cls, compile_configuration: CompileConfiguration) -> Command:
+    @staticmethod
+    def build_compile(compile_configuration: CompileConfiguration) -> Command:
         parameters: list[str | Path] = []
 
         parameters.extend(
@@ -26,8 +26,8 @@ class GPPCommandBuilder(CommandBuilder):
 
         return Command(compile_configuration.executable, parameters)
 
-    @classmethod
-    def build_link(cls, link_configuration: LinkConfiguration) -> Command:
+    @staticmethod
+    def build_link(link_configuration: LinkConfiguration) -> Command:
         parameters: list[str | Path] = []
 
         parameters.extend(link_configuration.object_files)

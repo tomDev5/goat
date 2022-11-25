@@ -5,12 +5,12 @@ from goat.command.configuration.link_configuration import LinkConfiguration
 
 
 class CommandBuilder(ABC):
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def build_compile(cls, compile_configuration: CompileConfiguration) -> Command:
+    def build_compile(compile_configuration: CompileConfiguration) -> Command:
         ...
 
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def build_link(cls, link_configuration: LinkConfiguration) -> Command:
+    def build_link(link_configuration: LinkConfiguration) -> Command:
         ...
