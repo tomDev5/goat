@@ -1,6 +1,8 @@
 from pathlib import Path
 from subprocess import PIPE, run
 from loguru import logger
+from goat.command.command_builder_factory import CommandBuilderFactory
+from goat.command.command_type import CommandType
 from goat.project.build_mode import BuildMode
 from goat.project.project_configuration import ProjectConfiguration
 from goat.project.project_path_resolver import ProjectPathResolver
@@ -32,35 +34,27 @@ class ProjectBuilder:
             f"Compiling {source_file.relative_to(self.path_resolver.root_path)}"
         )
 
-        include_paths = [
-            f"-I{include_path}"
-            for include_path in (
-                self.configuration.include_paths(build_mode)
-                + [self.path_resolver.include_directory]
-            )
-        ]
+        compiler = self.configuration.compiler(build_mode)
+        include_paths = self.configuration.include_paths(build_mode)
+        defines = self.configuration.defines(build_mode)
+        flags = self.configuration.compiler_flags(build_mode)
 
-        compiler_flags = (
-            self.configuration.compiler_flags(build_mode)
-            + [f"-D{define}" for define in self.configuration.defines(build_mode)]
-            + [
-                "-c",
-                "-o",
-                str(object_file),
-            ]
-        )
-
-        result = run(
-            [
-                self.configuration.compiler(build_mode),
+        command = (
+            CommandBuilderFactory.create(
+                CommandType.COMPILE,
+                compiler,
+                compiler,
                 source_file,
-                *include_paths,
-                *compiler_flags,
-            ],
-            stderr=PIPE,
-            text=True,
+                object_file,
+            )
+            .add_include_paths(include_paths)
+            .add_defines(defines)
+            .add_flags(flags)
+            .build()
         )
+        logger.trace(command)
 
+        result = run(command, stderr=PIPE, text=True)
         if result.returncode != 0:
             raise Exception(result.stderr)
 
@@ -73,28 +67,28 @@ class ProjectBuilder:
             f"Linking {self.configuration.target(build_mode).relative_to(self.path_resolver.root_path)}"
         )
 
+        linker = self.configuration.linker(build_mode)
+        target = self.configuration.target(build_mode)
         library_paths = self.configuration.library_paths(build_mode)
+        libraries = self.configuration.libraries(build_mode)
+        flags = self.configuration.linker_flags(build_mode)
 
-        linker_flags = (
-            self.configuration.linker_flags(build_mode)
-            + [f"-l{library}" for library in self.configuration.libraries(build_mode)]
-            + [
-                "-o",
-                str(self.configuration.target(build_mode)),
-            ]
+        command = (
+            CommandBuilderFactory.create(
+                CommandType.LINK,
+                linker,
+                linker,
+                target,
+                object_files,
+            )
+            .add_library_paths(library_paths)
+            .add_libraries(libraries)
+            .add_flags(flags)
+            .build()
         )
+        logger.trace(command)
 
-        result = run(
-            [
-                self.configuration.linker(build_mode),
-                *object_files,
-                *library_paths,
-                *linker_flags,
-            ],
-            stderr=PIPE,
-            text=True,
-        )
-
+        result = run(command, stderr=PIPE, text=True)
         if result.returncode != 0:
             raise Exception(result.stderr)
 

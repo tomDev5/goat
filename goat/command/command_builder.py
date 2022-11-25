@@ -15,5 +15,5 @@ class CommandBuilder(ABC):
     def build_list(self) -> list[str | Path]:
         ...
 
-    def build(self) -> str:
-        return " ".join(map(str, self.build_list()))
+    def build(self) -> list[str]:
+        return list(map(str, self.build_list()))

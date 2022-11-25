@@ -1,5 +1,5 @@
 from pathlib import Path
-from goat.command.link.ld_link_command_builder import LDLinkCommandBuilder
+from goat.command.link.gpp_link_command_builder import GPPLinkCommandBuilder
 from goat.command.link.link_command_builder import LinkCommandBuilder
 
 
@@ -12,7 +12,7 @@ class LinkCommandBuilderFactory:
         object_files: list[Path],
     ) -> LinkCommandBuilder:
         match linker:
-            case "ld":
-                return LDLinkCommandBuilder(executable, target_file, object_files)
+            case "g++":
+                return GPPLinkCommandBuilder(executable, target_file, object_files)
 
         raise NotImplementedError()

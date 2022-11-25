@@ -2,7 +2,7 @@ from pathlib import Path
 from goat.command.link.link_command_builder import LinkCommandBuilder
 
 
-class LDLinkCommandBuilder(LinkCommandBuilder):
+class GPPLinkCommandBuilder(LinkCommandBuilder):
     def build_list(self) -> list[str | Path]:
         result: list[str | Path] = []
 
