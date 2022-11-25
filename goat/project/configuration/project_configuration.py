@@ -44,20 +44,20 @@ class ProjectConfiguration:
     def from_configuration(
         cls,
         path_resolver: ProjectPathResolver,
-        raw_configuration: ConfigurationSchema,
+        configuration_schema: ConfigurationSchema,
     ) -> ProjectConfiguration:
         release = ProjectConfigurationVariantFactory.create(
-            raw_configuration,
+            configuration_schema,
             BuildMode.RELEASE,
         )
 
         debug = ProjectConfigurationVariantFactory.create(
-            raw_configuration,
+            configuration_schema,
             BuildMode.DEBUG,
         )
 
         test = ProjectConfigurationVariantFactory.create(
-            raw_configuration,
+            configuration_schema,
             BuildMode.TEST,
         )
 
