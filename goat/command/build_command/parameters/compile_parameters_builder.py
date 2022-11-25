@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 from typing import Iterable
-from goat.command.parameters.compile_parameters import CompileParameters
+from goat.command.build_command.parameters.compile_parameters import CompileParameters
 
 
 class CompileParametersBuilder:
