@@ -1,25 +1,3 @@
-[project]
-name = "goat"
-description = "C/C++ package manager"
-version = "0.1.0"
-authors = [
-    { name = "Tom Lubin", email = "tom@lubin.ws" },
-    { name = "Omer Lubin", email = "omer@lubin.ws" },
-    { name = "Denis Bucharskyy", email = "alotzost@gmail.com" },
-    { name = "Nadav Baruch", email = "nadavb333@gmail.com" },
-]
-dependencies = [
-    "pydantic",
-    "loguru",
-    "toml",
-]
-
-[project.scripts]
-goat = "goat.main:main"
-
-[tool.setuptools.package-data]
-"goat.template" = ["*.template"]
-
 [tool.poetry]
 name = "goat"
 version = "0.1.0"
