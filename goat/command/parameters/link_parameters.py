@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 @dataclass
-class LinkConfiguration:
+class LinkParameters:
     executable: str | Path
     target_file: Path
     object_files: list[Path]

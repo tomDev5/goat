@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 @dataclass
-class CompileConfiguration:
+class CompileParameters:
     executable: str | Path
     source_file: Path
     object_file: Path
