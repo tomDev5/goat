@@ -1,16 +1,16 @@
 from abc import ABC, abstractmethod
 from goat.command.builder.command import Command
-from goat.command.configuration.compile_configuration import CompileConfiguration
-from goat.command.configuration.link_configuration import LinkConfiguration
+from goat.command.parameters.compile_parameters import CompileParameters
+from goat.command.parameters.link_parameters import LinkParameters
 
 
 class CommandBuilder(ABC):
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def build_compile(cls, compile_configuration: CompileConfiguration) -> Command:
+    def build_compile(compile_parameters: CompileParameters) -> Command:
         ...
 
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def build_link(cls, link_configuration: LinkConfiguration) -> Command:
+    def build_link(link_parameters: LinkParameters) -> Command:
         ...
