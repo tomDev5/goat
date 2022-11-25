@@ -100,9 +100,9 @@ class ProjectBuilder:
 
         command = CommandBuilderFactory.create(executable).build_link(link_parameters)
 
-        result = run(command.to_list(), stderr=PIPE, text=True)
-        if result.returncode != 0:
-            raise Exception(result.stderr)
+        command_results = CommandRunner.run(command)
+        if command_results.failure:
+            raise Exception(command_results.standard_error)
 
     def get_object_mapping(self, build_mode: BuildMode) -> dict[Path, Path]:
         object_mapping: dict[Path, Path] = {}

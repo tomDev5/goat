@@ -1,5 +1,5 @@
 from pathlib import Path
-from goat.project.configuration.raw.raw_configuration import RawConfiguration
+from goat.project.configuration.schema.configuration_schema import ConfigurationSchema
 from goat.project.build_mode import BuildMode
 from goat.project.configuration.project_configuration_variant import (
     ProjectConfigurationVariant,
@@ -9,7 +9,7 @@ from goat.project.configuration.project_configuration_variant import (
 class ProjectConfigurationVariantFactory:
     @staticmethod
     def create(
-        raw_configuration: RawConfiguration,
+        raw_configuration: ConfigurationSchema,
         build_mode: BuildMode,
     ) -> ProjectConfigurationVariant:
         match build_mode:
