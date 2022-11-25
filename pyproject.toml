@@ -1,21 +1,24 @@
-[project]
+[tool.poetry]
 name = "goat"
-description = "C/C++ package manager"
 version = "0.1.0"
+description = "C/C++ package manager"
 authors = [
-    { name = "Tom Lubin", email = "tom@lubin.ws" },
-    { name = "Omer Lubin", email = "omer@lubin.ws" },
-    { name = "Denis Bucharskyy", email = "alotzost@gmail.com" },
-    { name = "Nadav Baruch", email = "nadavb333@gmail.com" },
+    "Tom Lubin <tom@lubin.ws>",
+    "Omer Lubin <omer@lubin.ws>",
+    "Denis Bucharskyy <alotzost@gmail.com>",
+    "Nadav Baruch <nadavb333@gmail.com>"
 ]
-dependencies = [
-    "pydantic",
-    "loguru",
-    "toml",
-]
+readme = "README.md"
 
-[project.scripts]
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^1.10.2"
+loguru = "^0.6.0"
+toml = "^0.10.2"
+
+[tool.poetry.scripts]
 goat = "goat.main:main"
 
-[tool.setuptools.package-data]
-"goat.template" = ["*.template"]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

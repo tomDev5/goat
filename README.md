@@ -31,3 +31,6 @@ The bottom line - we are perfectly usable from day zero, no popularity needed!
 # Clean objectfiles & binaries
 > goat clean
 ```
+
+# For Developers
+`goat` is developed using Poetry for its package managment. Make sure to refer to the [Poetry documentation](https://python-poetry.org/docs/) on how to setup the development environment.
