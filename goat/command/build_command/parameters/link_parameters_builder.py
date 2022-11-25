@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 from typing import Iterable
-from goat.command.parameters.link_parameters import LinkParameters
+from goat.command.build_command.parameters.link_parameters import LinkParameters
 
 
 class LinkParametersBuilder:

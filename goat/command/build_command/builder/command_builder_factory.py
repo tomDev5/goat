@@ -1,5 +1,5 @@
-from goat.command.builder.command_builder import CommandBuilder
-from goat.command.builder.gpp_command_builder import GPPCommandBuilder
+from goat.command.build_command.builder.command_builder import CommandBuilder
+from goat.command.build_command.builder.gpp_command_builder import GPPCommandBuilder
 
 
 class CommandBuilderFactory:

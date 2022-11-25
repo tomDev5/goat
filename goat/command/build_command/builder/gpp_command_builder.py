@@ -1,8 +1,8 @@
 from pathlib import Path
-from goat.command.builder.command import Command
-from goat.command.builder.command_builder import CommandBuilder
-from goat.command.parameters.compile_parameters import CompileParameters
-from goat.command.parameters.link_parameters import LinkParameters
+from goat.command.command import Command
+from goat.command.build_command.builder.command_builder import CommandBuilder
+from goat.command.build_command.parameters.compile_parameters import CompileParameters
+from goat.command.build_command.parameters.link_parameters import LinkParameters
 
 
 class GPPCommandBuilder(CommandBuilder):
