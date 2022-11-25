@@ -75,7 +75,7 @@ class ProjectConfiguration:
         self.debug_configuration = debug_configuration
         self.test_configuration = test_configuration
 
-    def configuration(
+    def configuration_variant(
         self,
         build_mode: BuildMode,
     ) -> ProjectConfigurationVariant:
@@ -90,29 +90,29 @@ class ProjectConfiguration:
                 return self.test_configuration
 
     def target(self, build_mode: BuildMode) -> Path:
-        name = self.configuration(build_mode).target
+        name = self.configuration_variant(build_mode).target
         return self.path_resolver.binary_directory / name
 
     def compiler(self, build_mode: BuildMode) -> str:
-        return self.configuration(build_mode).compiler
+        return self.configuration_variant(build_mode).compiler
 
     def include_paths(self, build_mode: BuildMode) -> list[Path]:
-        return self.configuration(build_mode).include_paths
+        return self.configuration_variant(build_mode).include_paths
 
     def compiler_flags(self, build_mode: BuildMode) -> list[str]:
-        return self.configuration(build_mode).compiler_flags
+        return self.configuration_variant(build_mode).compiler_flags
 
     def defines(self, build_mode: BuildMode) -> list[str]:
-        return self.configuration(build_mode).defines
+        return self.configuration_variant(build_mode).defines
 
     def linker(self, build_mode: BuildMode) -> str:
-        return self.configuration(build_mode).linker
+        return self.configuration_variant(build_mode).linker
 
     def linker_flags(self, build_mode: BuildMode) -> list[str]:
-        return self.configuration(build_mode).linker_flags
+        return self.configuration_variant(build_mode).linker_flags
 
     def library_paths(self, build_mode: BuildMode) -> list[Path]:
-        return self.configuration(build_mode).library_paths
+        return self.configuration_variant(build_mode).library_paths
 
     def libraries(self, build_mode: BuildMode) -> list[str]:
-        return self.configuration(build_mode).libraries
+        return self.configuration_variant(build_mode).libraries

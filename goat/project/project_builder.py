@@ -14,10 +14,10 @@ from goat.command.parameters.link_parameters_builder import (
 
 
 class ProjectBuilder:
-    configuration: ProjectConfiguration
+    project_configuration: ProjectConfiguration
 
-    def __init__(self, configuration: ProjectConfiguration) -> None:
-        self.configuration = configuration
+    def __init__(self, project_configuration: ProjectConfiguration) -> None:
+        self.project_configuration = project_configuration
 
     def build_target_file(self, build_mode: BuildMode) -> None:
         object_mapping = self.get_object_mapping(build_mode)
@@ -26,7 +26,9 @@ class ProjectBuilder:
             object_file.parent.mkdir(parents=True, exist_ok=True)
             self.compile_object_file(source_file, object_file, build_mode)
 
-        self.configuration.target(build_mode).parent.mkdir(parents=True, exist_ok=True)
+        self.project_configuration.target(build_mode).parent.mkdir(
+            parents=True, exist_ok=True
+        )
         self.link_object_files(list(object_mapping.values()), build_mode)
 
     def compile_object_file(
@@ -39,11 +41,11 @@ class ProjectBuilder:
             f"Compiling {source_file.relative_to(self.path_resolver.root_path)}"
         )
 
-        executable = self.configuration.compiler(build_mode)
+        executable = self.project_configuration.compiler(build_mode)
         include_directory = self.path_resolver.include_directory
-        include_paths = self.configuration.include_paths(build_mode)
-        defines = self.configuration.defines(build_mode)
-        flags = self.configuration.compiler_flags(build_mode)
+        include_paths = self.project_configuration.include_paths(build_mode)
+        defines = self.project_configuration.defines(build_mode)
+        flags = self.project_configuration.compiler_flags(build_mode)
 
         compile_parameters = (
             CompileParametersBuilder(
@@ -72,14 +74,14 @@ class ProjectBuilder:
         build_mode: BuildMode,
     ) -> None:
         logger.trace(
-            f"Linking {self.configuration.target(build_mode).relative_to(self.path_resolver.root_path)}"
+            f"Linking {self.project_configuration.target(build_mode).relative_to(self.path_resolver.root_path)}"
         )
 
-        executable = self.configuration.linker(build_mode)
-        target_file = self.configuration.target(build_mode)
-        library_paths = self.configuration.library_paths(build_mode)
-        libraries = self.configuration.libraries(build_mode)
-        flags = self.configuration.linker_flags(build_mode)
+        executable = self.project_configuration.linker(build_mode)
+        target_file = self.project_configuration.target(build_mode)
+        library_paths = self.project_configuration.library_paths(build_mode)
+        libraries = self.project_configuration.libraries(build_mode)
+        flags = self.project_configuration.linker_flags(build_mode)
 
         link_parameters = (
             LinkParametersBuilder(
@@ -121,4 +123,4 @@ class ProjectBuilder:
 
     @property
     def path_resolver(self) -> ProjectPathResolver:
-        return self.configuration.path_resolver
+        return self.project_configuration.path_resolver
