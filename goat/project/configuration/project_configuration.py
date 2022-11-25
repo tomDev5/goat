@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
-from goat.project.configuration.raw.raw_configuration import RawConfiguration
+from goat.project.configuration.schema.configuration_schema import ConfigurationSchema
 from toml import loads as toml_to_dict
 from goat.project.configuration.project_configuration_variant import (
     ProjectConfigurationVariant,
@@ -37,27 +37,27 @@ class ProjectConfiguration:
         configuration_dict = toml_to_dict(configuration_path.read_text())
         return cls.from_configuration(
             ProjectPathResolver(root_path),
-            RawConfiguration.parse_obj(configuration_dict),
+            ConfigurationSchema.parse_obj(configuration_dict),
         )
 
     @classmethod
     def from_configuration(
         cls,
         path_resolver: ProjectPathResolver,
-        raw_configuration: RawConfiguration,
+        configuration_schema: ConfigurationSchema,
     ) -> ProjectConfiguration:
         release = ProjectConfigurationVariantFactory.create(
-            raw_configuration,
+            configuration_schema,
             BuildMode.RELEASE,
         )
 
         debug = ProjectConfigurationVariantFactory.create(
-            raw_configuration,
+            configuration_schema,
             BuildMode.DEBUG,
         )
 
         test = ProjectConfigurationVariantFactory.create(
-            raw_configuration,
+            configuration_schema,
             BuildMode.TEST,
         )
 
