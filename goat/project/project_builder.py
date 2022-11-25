@@ -3,7 +3,7 @@ from subprocess import PIPE, run
 from loguru import logger
 from goat.command.builder.command_builder_factory import CommandBuilderFactory
 from goat.project.build_mode import BuildMode
-from goat.project.project_configuration import ProjectConfiguration
+from goat.project.configuration.project_configuration import ProjectConfiguration
 from goat.project.project_path_resolver import ProjectPathResolver
 from goat.command.configuration.compile_configuration_builder import (
     CompileConfigurationBuilder,

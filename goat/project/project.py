@@ -5,7 +5,7 @@ from shutil import rmtree
 from subprocess import run
 from goat.project.build_mode import BuildMode
 from goat.project.project_builder import ProjectBuilder
-from goat.project.project_configuration import ProjectConfiguration
+from goat.project.configuration.project_configuration import ProjectConfiguration
 from goat.project.project_initializer import ProjectInitializer
 from loguru import logger
 

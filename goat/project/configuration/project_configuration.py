@@ -1,11 +1,13 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
-from goat.configuration.configuration import Configuration
+from goat.project.configuration.raw.raw_configuration import RawConfiguration
 from toml import loads as toml_to_dict
-from goat.project.project_configuration_variant import ProjectConfigurationVariant
+from goat.project.configuration.project_configuration_variant import (
+    ProjectConfigurationVariant,
+)
 from goat.project.build_mode import BuildMode
-from goat.project.project_configuration_variant_factory import (
+from goat.project.configuration.project_configuration_variant_factory import (
     ProjectConfigurationVariantFactory,
 )
 from goat.project.project_path_resolver import ProjectPathResolver
@@ -35,22 +37,30 @@ class ProjectConfiguration:
         configuration_dict = toml_to_dict(configuration_path.read_text())
         return cls.from_configuration(
             ProjectPathResolver(root_path),
-            Configuration.parse_obj(configuration_dict),
+            RawConfiguration.parse_obj(configuration_dict),
         )
 
     @classmethod
     def from_configuration(
         cls,
         path_resolver: ProjectPathResolver,
-        configuration: Configuration,
+        raw_configuration: RawConfiguration,
     ) -> ProjectConfiguration:
         release = ProjectConfigurationVariantFactory.create(
-            configuration, BuildMode.RELEASE
+            raw_configuration,
+            BuildMode.RELEASE,
         )
+
         debug = ProjectConfigurationVariantFactory.create(
-            configuration, BuildMode.DEBUG
+            raw_configuration,
+            BuildMode.DEBUG,
         )
-        test = ProjectConfigurationVariantFactory.create(configuration, BuildMode.TEST)
+
+        test = ProjectConfigurationVariantFactory.create(
+            raw_configuration,
+            BuildMode.TEST,
+        )
+
         return cls(path_resolver, release, debug, test)
 
     def __init__(
