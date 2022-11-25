@@ -19,8 +19,10 @@ class Project:
     def from_path(cls, root_path: Path) -> Project:
         logger.info(f"Loading project '{root_path.name}'")
         configuration_path = root_path / ProjectConfiguration.CONFIGURATION_FILE_NAME
+        
         if not configuration_path.is_file():
             raise FileNotFoundError(f"Cannot find `{ProjectConfiguration.CONFIGURATION_FILE_NAME}` in `{root_path.absolute()}`")
+
         project_configuration = ProjectConfiguration.from_path(
             root_path, configuration_path
         )
