@@ -4,8 +4,8 @@ from goat.command.builder.gpp_command_builder import GPPCommandBuilder
 
 class CommandBuilderFactory:
     @staticmethod
-    def create(name: str) -> type[CommandBuilder]:
-        match name:
+    def create(program: str) -> type[CommandBuilder]:
+        match program:
             case "g++":
                 return GPPCommandBuilder
 
