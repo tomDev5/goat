@@ -35,6 +35,7 @@ class ProjectBuilder:
         )
 
         compiler = self.configuration.compiler(build_mode)
+        include_directory = self.path_resolver.include_directory
         include_paths = self.configuration.include_paths(build_mode)
         defines = self.configuration.defines(build_mode)
         flags = self.configuration.compiler_flags(build_mode)
@@ -47,6 +48,7 @@ class ProjectBuilder:
                 source_file,
                 object_file,
             )
+            .add_include_path(include_directory)
             .add_include_paths(include_paths)
             .add_defines(defines)
             .add_flags(flags)
