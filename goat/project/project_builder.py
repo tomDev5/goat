@@ -62,7 +62,7 @@ class ProjectBuilder:
             compile_configuration
         )
 
-        result = run(command, stderr=PIPE, text=True)
+        result = run(command.to_list(), stderr=PIPE, text=True)
         if result.returncode != 0:
             raise Exception(result.stderr)
 
@@ -97,7 +97,7 @@ class ProjectBuilder:
             link_configuration
         )
 
-        result = run(command, stderr=PIPE, text=True)
+        result = run(command.to_list(), stderr=PIPE, text=True)
         if result.returncode != 0:
             raise Exception(result.stderr)
 
