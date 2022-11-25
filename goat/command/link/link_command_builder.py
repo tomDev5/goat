@@ -12,21 +12,18 @@ class LinkCommandBuilder(CommandBuilder):
     library_paths: list[Path]
     libraries: list[str]
 
-    def __init__(self, program: str | Path, target_file: Path) -> None:
-        super().__init__(program)
+    def __init__(
+        self,
+        executable: str | Path,
+        target_file: Path,
+        object_files: list[Path],
+    ) -> None:
+        super().__init__(executable)
         self.target_file = target_file
-        self.object_files = []
+        self.object_files = object_files
         self.flags = []
         self.library_paths = []
         self.libraries = []
-
-    def add_object_file(self: T, object_file: Path) -> T:
-        self.object_files.append(object_file)
-        return self
-
-    def add_object_files(self: T, object_files: Iterable[Path]) -> T:
-        self.object_files.extend(object_files)
-        return self
 
     def add_flag(self: T, flag: str) -> T:
         self.flags.append(flag)

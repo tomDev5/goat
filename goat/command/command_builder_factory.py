@@ -1,4 +1,5 @@
-from typing import Literal, overload
+from pathlib import Path
+from typing import Any, Literal, overload
 from goat.command.command_type import CommandType
 from goat.command.compile.compile_command_builder import CompileCommandBuilder
 from goat.command.compile.compile_command_builder_factory import (
@@ -13,7 +14,10 @@ class CommandBuilderFactory:
     @staticmethod
     def create(
         command_type: Literal[CommandType.COMPILE],
-        program: str,
+        compiler_or_linker: str,
+        executable: str | Path,
+        source_file: Path,
+        object_file: Path,
     ) -> CompileCommandBuilder:
         ...
 
@@ -21,18 +25,28 @@ class CommandBuilderFactory:
     @staticmethod
     def create(
         command_type: Literal[CommandType.LINK],
-        program: str,
+        compiler_or_linker: str,
+        executable: str | Path,
+        target_file: Path,
+        object_files: list[Path],
     ) -> LinkCommandBuilder:
         ...
 
-    @staticmethod
+    @staticmethod  # type: ignore[misc]
     def create(
         command_type: CommandType,
-        program: str,
+        compiler_or_linker: str,
+        *arguments: Any,
     ) -> CompileCommandBuilder | LinkCommandBuilder:
         match command_type:
             case CommandType.COMPILE:
-                return CompileCommandBuilderFactory.create(program)
+                return CompileCommandBuilderFactory.create(
+                    compiler_or_linker,
+                    *arguments,
+                )
 
             case CommandType.LINK:
-                return LinkCommandBuilderFactory.create(program)
+                return LinkCommandBuilderFactory.create(
+                    compiler_or_linker,
+                    *arguments,
+                )

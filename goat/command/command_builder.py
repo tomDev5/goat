@@ -6,10 +6,10 @@ T = TypeVar("T", bound="CommandBuilder")
 
 
 class CommandBuilder(ABC):
-    program: str | Path
+    executable: str | Path
 
-    def __init__(self, program: str | Path) -> None:
-        self.program = program
+    def __init__(self, executable: str | Path) -> None:
+        self.executable = executable
 
     @abstractmethod
     def build_list(self) -> list[str | Path]:

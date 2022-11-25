@@ -1,5 +1,5 @@
 [build.all]
-linker = "g++"
+linker = "ld"
 linker_flags = []
 library_paths = []
 libraries = []

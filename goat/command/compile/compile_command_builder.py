@@ -15,11 +15,11 @@ class CompileCommandBuilder(CommandBuilder):
 
     def __init__(
         self,
-        program: str | Path,
+        executable: str | Path,
         source_file: Path,
         object_file: Path,
     ) -> None:
-        super().__init__(program)
+        super().__init__(executable)
         self.source_file = source_file
         self.object_file = object_file
         self.include_paths = []
