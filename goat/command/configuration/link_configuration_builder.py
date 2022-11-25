@@ -19,27 +19,30 @@ class LinkConfigurationBuilder:
             object_files,
         )
 
-    def add_flag(self, flag: str):
+    def add_flag(self, flag: str) -> LinkConfigurationBuilder:
         self.link_configuration.flags.append(flag)
         return self
 
-    def add_flags(self, flags: Iterable[str]):
+    def add_flags(self, flags: Iterable[str]) -> LinkConfigurationBuilder:
         self.link_configuration.flags.extend(flags)
         return self
 
-    def add_library_path(self, library_path: Path):
+    def add_library_path(self, library_path: Path) -> LinkConfigurationBuilder:
         self.link_configuration.library_paths.append(library_path)
         return self
 
-    def add_library_paths(self, library_paths: Iterable[Path]):
+    def add_library_paths(
+        self,
+        library_paths: Iterable[Path],
+    ) -> LinkConfigurationBuilder:
         self.link_configuration.library_paths.extend(library_paths)
         return self
 
-    def add_library(self, library: str):
+    def add_library(self, library: str) -> LinkConfigurationBuilder:
         self.link_configuration.libraries.append(library)
         return self
 
-    def add_libraries(self, libraries: Iterable[str]):
+    def add_libraries(self, libraries: Iterable[str]) -> LinkConfigurationBuilder:
         self.link_configuration.libraries.extend(libraries)
         return self
 
