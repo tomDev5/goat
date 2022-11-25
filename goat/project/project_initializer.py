@@ -1,5 +1,5 @@
 from goat.project.project_path_resolver import ProjectPathResolver
-from goat.template.template import Template
+from goat.project.template.template import Template
 
 
 class ProjectInitializer:

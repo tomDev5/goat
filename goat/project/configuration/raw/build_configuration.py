@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from goat.configuration.build_configuration_variant import (
+from goat.project.configuration.raw.build_configuration_variant import (
     BuildConfigurationVariant,
 )
 

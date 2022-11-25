@@ -1,11 +1,13 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
-from goat.configuration.configuration import Configuration
+from goat.project.configuration.raw.raw_configuration import RawConfiguration
 from toml import loads as toml_to_dict
-from goat.project.project_configuration_variant import ProjectConfigurationVariant
+from goat.project.configuration.project_configuration_variant import (
+    ProjectConfigurationVariant,
+)
 from goat.project.build_mode import BuildMode
-from goat.project.project_configuration_variant_factory import (
+from goat.project.configuration.project_configuration_variant_factory import (
     ProjectConfigurationVariantFactory,
 )
 from goat.project.project_path_resolver import ProjectPathResolver
@@ -35,22 +37,30 @@ class ProjectConfiguration:
         configuration_dict = toml_to_dict(configuration_path.read_text())
         return cls.from_configuration(
             ProjectPathResolver(root_path),
-            Configuration.parse_obj(configuration_dict),
+            RawConfiguration.parse_obj(configuration_dict),
         )
 
     @classmethod
     def from_configuration(
         cls,
         path_resolver: ProjectPathResolver,
-        configuration: Configuration,
+        raw_configuration: RawConfiguration,
     ) -> ProjectConfiguration:
         release = ProjectConfigurationVariantFactory.create(
-            configuration, BuildMode.RELEASE
+            raw_configuration,
+            BuildMode.RELEASE,
         )
+
         debug = ProjectConfigurationVariantFactory.create(
-            configuration, BuildMode.DEBUG
+            raw_configuration,
+            BuildMode.DEBUG,
         )
-        test = ProjectConfigurationVariantFactory.create(configuration, BuildMode.TEST)
+
+        test = ProjectConfigurationVariantFactory.create(
+            raw_configuration,
+            BuildMode.TEST,
+        )
+
         return cls(path_resolver, release, debug, test)
 
     def __init__(
@@ -65,7 +75,7 @@ class ProjectConfiguration:
         self.debug_configuration = debug_configuration
         self.test_configuration = test_configuration
 
-    def configuration(
+    def configuration_variant(
         self,
         build_mode: BuildMode,
     ) -> ProjectConfigurationVariant:
@@ -80,29 +90,29 @@ class ProjectConfiguration:
                 return self.test_configuration
 
     def target(self, build_mode: BuildMode) -> Path:
-        name = self.configuration(build_mode).target
+        name = self.configuration_variant(build_mode).target
         return self.path_resolver.binary_directory / name
 
     def compiler(self, build_mode: BuildMode) -> str:
-        return self.configuration(build_mode).compiler
+        return self.configuration_variant(build_mode).compiler
 
     def include_paths(self, build_mode: BuildMode) -> list[Path]:
-        return self.configuration(build_mode).include_paths
+        return self.configuration_variant(build_mode).include_paths
 
     def compiler_flags(self, build_mode: BuildMode) -> list[str]:
-        return self.configuration(build_mode).compiler_flags
+        return self.configuration_variant(build_mode).compiler_flags
 
     def defines(self, build_mode: BuildMode) -> list[str]:
-        return self.configuration(build_mode).defines
+        return self.configuration_variant(build_mode).defines
 
     def linker(self, build_mode: BuildMode) -> str:
-        return self.configuration(build_mode).linker
+        return self.configuration_variant(build_mode).linker
 
     def linker_flags(self, build_mode: BuildMode) -> list[str]:
-        return self.configuration(build_mode).linker_flags
+        return self.configuration_variant(build_mode).linker_flags
 
     def library_paths(self, build_mode: BuildMode) -> list[Path]:
-        return self.configuration(build_mode).library_paths
+        return self.configuration_variant(build_mode).library_paths
 
     def libraries(self, build_mode: BuildMode) -> list[str]:
-        return self.configuration(build_mode).libraries
+        return self.configuration_variant(build_mode).libraries
