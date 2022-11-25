@@ -5,7 +5,12 @@ from goat.command.parameters.link_parameters import LinkParameters
 
 
 class LinkParametersBuilder:
-    link_parameters: LinkParameters
+    executable: str | Path
+    target_file: Path
+    object_files: list[Path]
+    flags: list[str]
+    library_paths: list[Path]
+    libraries: list[str]
 
     def __init__(
         self,
@@ -13,38 +18,46 @@ class LinkParametersBuilder:
         target_file: Path,
         object_files: list[Path],
     ) -> None:
-        self.link_parameters = LinkParameters(
-            executable,
-            target_file,
-            object_files,
-        )
+        self.executable = executable
+        self.target_file = target_file
+        self.object_files = object_files
+        self.flags = []
+        self.library_paths = []
+        self.libraries = []
 
     def add_flag(self, flag: str) -> LinkParametersBuilder:
-        self.link_parameters.flags.append(flag)
+        self.flags.append(flag)
         return self
 
     def add_flags(self, flags: Iterable[str]) -> LinkParametersBuilder:
-        self.link_parameters.flags.extend(flags)
+        self.flags.extend(flags)
         return self
 
     def add_library_path(self, library_path: Path) -> LinkParametersBuilder:
-        self.link_parameters.library_paths.append(library_path)
+        self.library_paths.append(library_path)
         return self
 
     def add_library_paths(
         self,
         library_paths: Iterable[Path],
     ) -> LinkParametersBuilder:
-        self.link_parameters.library_paths.extend(library_paths)
+        self.library_paths.extend(library_paths)
         return self
 
     def add_library(self, library: str) -> LinkParametersBuilder:
-        self.link_parameters.libraries.append(library)
+        self.libraries.append(library)
         return self
 
     def add_libraries(self, libraries: Iterable[str]) -> LinkParametersBuilder:
-        self.link_parameters.libraries.extend(libraries)
+        self.libraries.extend(libraries)
         return self
 
     def build(self) -> LinkParameters:
-        return self.link_parameters
+        return LinkParameters(
+            self.executable,
+            self.target_file,
+            self.object_files,
+            self.flags,
+            self.library_paths,
+            self.libraries,
+        )
