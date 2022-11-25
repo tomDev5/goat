@@ -1,11 +1,16 @@
 from pathlib import Path
 from subprocess import PIPE, run
 from loguru import logger
-from goat.command.command_builder_factory import CommandBuilderFactory
-from goat.command.command_type import CommandType
+from goat.command.builder.command_builder_factory import CommandBuilderFactory
 from goat.project.build_mode import BuildMode
 from goat.project.project_configuration import ProjectConfiguration
 from goat.project.project_path_resolver import ProjectPathResolver
+from goat.command.configuration.compile_configuration_builder import (
+    CompileConfigurationBuilder,
+)
+from goat.command.configuration.link_configuration_builder import (
+    LinkConfigurationBuilder,
+)
 
 
 class ProjectBuilder:
@@ -34,17 +39,15 @@ class ProjectBuilder:
             f"Compiling {source_file.relative_to(self.path_resolver.root_path)}"
         )
 
-        compiler = self.configuration.compiler(build_mode)
+        executable = self.configuration.compiler(build_mode)
         include_directory = self.path_resolver.include_directory
         include_paths = self.configuration.include_paths(build_mode)
         defines = self.configuration.defines(build_mode)
         flags = self.configuration.compiler_flags(build_mode)
 
-        command = (
-            CommandBuilderFactory.create(
-                CommandType.COMPILE,
-                compiler,
-                compiler,
+        compile_configuration = (
+            CompileConfigurationBuilder(
+                executable,
                 source_file,
                 object_file,
             )
@@ -53,6 +56,10 @@ class ProjectBuilder:
             .add_defines(defines)
             .add_flags(flags)
             .build()
+        )
+
+        command = CommandBuilderFactory.create(executable).build_compile(
+            compile_configuration
         )
 
         result = run(command, stderr=PIPE, text=True)
@@ -68,24 +75,26 @@ class ProjectBuilder:
             f"Linking {self.configuration.target(build_mode).relative_to(self.path_resolver.root_path)}"
         )
 
-        linker = self.configuration.linker(build_mode)
-        target = self.configuration.target(build_mode)
+        executable = self.configuration.linker(build_mode)
+        target_file = self.configuration.target(build_mode)
         library_paths = self.configuration.library_paths(build_mode)
         libraries = self.configuration.libraries(build_mode)
         flags = self.configuration.linker_flags(build_mode)
 
-        command = (
-            CommandBuilderFactory.create(
-                CommandType.LINK,
-                linker,
-                linker,
-                target,
+        link_configuration = (
+            LinkConfigurationBuilder(
+                executable,
+                target_file,
                 object_files,
             )
             .add_library_paths(library_paths)
             .add_libraries(libraries)
             .add_flags(flags)
             .build()
+        )
+
+        command = CommandBuilderFactory.create(executable).build_link(
+            link_configuration
         )
 
         result = run(command, stderr=PIPE, text=True)
