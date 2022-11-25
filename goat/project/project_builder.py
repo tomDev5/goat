@@ -5,11 +5,11 @@ from goat.command.builder.command_builder_factory import CommandBuilderFactory
 from goat.project.build_mode import BuildMode
 from goat.project.project_configuration import ProjectConfiguration
 from goat.project.project_path_resolver import ProjectPathResolver
-from goat.command.configuration.compile_configuration_builder import (
-    CompileConfigurationBuilder,
+from goat.command.parameters.compile_parameters_builder import (
+    CompileParametersBuilder,
 )
-from goat.command.configuration.link_configuration_builder import (
-    LinkConfigurationBuilder,
+from goat.command.parameters.link_parameters_builder import (
+    LinkParametersBuilder,
 )
 
 
@@ -45,8 +45,8 @@ class ProjectBuilder:
         defines = self.configuration.defines(build_mode)
         flags = self.configuration.compiler_flags(build_mode)
 
-        compile_configuration = (
-            CompileConfigurationBuilder(
+        compile_parameters = (
+            CompileParametersBuilder(
                 executable,
                 source_file,
                 object_file,
@@ -59,7 +59,7 @@ class ProjectBuilder:
         )
 
         command = CommandBuilderFactory.create(executable).build_compile(
-            compile_configuration
+            compile_parameters
         )
 
         result = run(command.to_list(), stderr=PIPE, text=True)
@@ -81,8 +81,8 @@ class ProjectBuilder:
         libraries = self.configuration.libraries(build_mode)
         flags = self.configuration.linker_flags(build_mode)
 
-        link_configuration = (
-            LinkConfigurationBuilder(
+        link_parameters = (
+            LinkParametersBuilder(
                 executable,
                 target_file,
                 object_files,
@@ -93,9 +93,7 @@ class ProjectBuilder:
             .build()
         )
 
-        command = CommandBuilderFactory.create(executable).build_link(
-            link_configuration
-        )
+        command = CommandBuilderFactory.create(executable).build_link(link_parameters)
 
         result = run(command.to_list(), stderr=PIPE, text=True)
         if result.returncode != 0:
