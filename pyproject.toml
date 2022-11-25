@@ -38,6 +38,8 @@ pydantic = "^1.10.2"
 loguru = "^0.6.0"
 toml = "^0.10.2"
 
+[tool.poetry.scripts]
+goat = "goat.main:main"
 
 [build-system]
 requires = ["poetry-core"]
