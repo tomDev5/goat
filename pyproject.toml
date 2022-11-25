@@ -19,3 +19,26 @@ goat = "goat.main:main"
 
 [tool.setuptools.package-data]
 "goat.template" = ["*.template"]
+
+[tool.poetry]
+name = "goat"
+version = "0.1.0"
+description = "C/C++ package manager"
+authors = [
+    "Tom Lubin <tom@lubin.ws>",
+    "Omer Lubin <omer@lubin.ws>",
+    "Denis Bucharskyy <alotzost@gmail.com>",
+    "Nadav Baruch <nadavb333@gmail.com>"
+]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^1.10.2"
+loguru = "^0.6.0"
+toml = "^0.10.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
