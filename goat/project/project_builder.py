@@ -52,7 +52,6 @@ class ProjectBuilder:
             .add_flags(flags)
             .build()
         )
-        logger.trace(command)
 
         result = run(command, stderr=PIPE, text=True)
         if result.returncode != 0:
@@ -86,7 +85,6 @@ class ProjectBuilder:
             .add_flags(flags)
             .build()
         )
-        logger.trace(command)
 
         result = run(command, stderr=PIPE, text=True)
         if result.returncode != 0:
