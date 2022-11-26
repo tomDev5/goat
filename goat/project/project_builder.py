@@ -23,29 +23,24 @@ class ProjectBuilder:
         self.project_configuration = project_configuration
 
     def build_target_file(self, build_mode: BuildMode) -> None:
-        compiled_anything = False
         snapshot = ProjectSnapshotFactory.create(self.project_configuration, build_mode)
-        for file_snapshot in snapshot.file_snapshots:
-            source_file = file_snapshot.source_file
-            object_file = file_snapshot.object_file
-            relative_source_file = source_file.relative_to(self.path_resolver.root_path)
 
-            if file_snapshot.outdated:
-                logger.trace(f"Compiling {relative_source_file}")
-                object_file.parent.mkdir(parents=True, exist_ok=True)
-                self.compile_object_file(source_file, object_file, build_mode)
-                compiled_anything = True
-            else:
-                logger.trace(f"Skipping compilation of {relative_source_file}")
+        for outdated_file_snapshot in snapshot.outdated_file_snapshots:
+            source_file = outdated_file_snapshot.source_file
+            object_file = outdated_file_snapshot.object_file
+
+            relative_source_file = source_file.relative_to(self.path_resolver.root_path)
+            logger.trace(f"Compiling {relative_source_file}")
+
+            object_file.parent.mkdir(parents=True, exist_ok=True)
+            self.compile_object_file(source_file, object_file, build_mode)
 
         target_file = self.project_configuration.target(build_mode)
         relative_target_file = target_file.relative_to(self.path_resolver.root_path)
-        if compiled_anything or snapshot.target_outdated:
+        if snapshot.target_file_outdated:
             logger.trace(f"Linking {relative_target_file}")
             target_file.parent.mkdir(parents=True, exist_ok=True)
-            self.link_object_files(snapshot.object_files, target_file, build_mode)
-        else:
-            logger.trace(f"Skipping linkage of {relative_target_file}")
+            self.link_object_files(list(snapshot.object_files), target_file, build_mode)
 
     def compile_object_file(
         self,

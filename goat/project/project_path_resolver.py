@@ -48,6 +48,6 @@ class ProjectPathResolver:
 
     def object_file(self, source_file: Path, build_mode: BuildMode) -> Path:
         relative_source_file = source_file.relative_to(self.root_path)
-        object_file_name = f"{relative_source_file.stem}.o"
+        object_file_name = f"{relative_source_file.name}.o"
         relative_object_file = relative_source_file.parent / object_file_name
         return self.object_directory(build_mode) / relative_object_file
