@@ -1,13 +1,13 @@
 from pathlib import Path
 from goat.command.command import Command
-from goat.command.build_command.factory.base_build_command_factory import (
-    BaseBuildCommandFactory,
+from goat.command.build_command.factory.toolchain_command_factory import (
+    ToolchainCommandFactory,
 )
 from goat.command.build_command.parameters.compile_parameters import CompileParameters
 from goat.command.build_command.parameters.link_parameters import LinkParameters
 
 
-class GPPBuildCommandFactory(BaseBuildCommandFactory):
+class GPPCommandFactory(ToolchainCommandFactory):
     @staticmethod
     def create_compile(compile_parameters: CompileParameters) -> Command:
         parameters: list[str | Path] = []
