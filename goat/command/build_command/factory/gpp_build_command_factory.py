@@ -1,6 +1,6 @@
 from pathlib import Path
 from goat.command.command import Command
-from goat.command.build_command.builder.base_build_command_factory import (
+from goat.command.build_command.factory.base_build_command_factory import (
     BaseBuildCommandFactory,
 )
 from goat.command.build_command.parameters.compile_parameters import CompileParameters

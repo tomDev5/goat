@@ -1,6 +1,6 @@
 from pathlib import Path
 from loguru import logger
-from goat.command.build_command.builder.build_command_factory import (
+from goat.command.build_command.factory.build_command_factory import (
     BuildCommandFactory,
 )
 from goat.command.command_runner import CommandRunner
