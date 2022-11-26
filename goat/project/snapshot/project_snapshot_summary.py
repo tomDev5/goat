@@ -11,3 +11,12 @@ class ProjectSummary:
     @property
     def target_file_updated(self) -> bool:
         return not self.target_file_outdated
+
+    @property
+    def object_files(self) -> list[Path]:
+        return list(
+            map(
+                lambda file_pair: file_pair[1],
+                self.updated_files + self.outdated_files,
+            )
+        )

@@ -1,12 +1,10 @@
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Iterator
-from goat.project.snapshot.project_file_snapshot import ProjectFileSnapshot
+from goat.project.snapshot.project_snapshot_entry import ProjectSnapshotEntry
 
 
 @dataclass
 class ProjectSnapshot:
-    file_snapshots: list[ProjectFileSnapshot]
+    file_snapshots: list[ProjectSnapshotEntry]
     target_file_time: float | None
     latest_object_file_time: float | None
     latest_include_file_time: float | None

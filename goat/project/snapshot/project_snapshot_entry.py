@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 @dataclass
-class ProjectFileSnapshot:
+class ProjectSnapshotEntry:
     source_file: Path
     source_file_time: float
     object_file: Path

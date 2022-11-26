@@ -43,15 +43,7 @@ class ProjectBuilder:
         if summary.target_file_outdated:
             logger.trace(f"Linking {relative_target_file}")
             target_file.parent.mkdir(parents=True, exist_ok=True)
-            object_files = list(
-                file_snapshot.object_file for file_snapshot in snapshot.file_snapshots
-            )
-
-            self.link_object_files(
-                object_files,
-                target_file,
-                build_mode,
-            )
+            self.link_object_files(summary.object_files, target_file, build_mode)
 
         else:
             logger.trace(f"Skipping linkage of {relative_target_file}")

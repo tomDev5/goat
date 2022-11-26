@@ -1,7 +1,7 @@
 from goat.project.build_mode import BuildMode
 from goat.project.configuration.project_configuration import ProjectConfiguration
 from goat.project.project_path_resolver import ProjectPathResolver
-from goat.project.snapshot.project_file_snapshot import ProjectFileSnapshot
+from goat.project.snapshot.project_snapshot_entry import ProjectSnapshotEntry
 from goat.project.snapshot.project_snapshot import ProjectSnapshot
 
 
@@ -43,12 +43,12 @@ class ProjectSnapshotFactory:
     def get_file_snapshots(
         path_resolver: ProjectPathResolver,
         build_mode: BuildMode,
-    ) -> list[ProjectFileSnapshot]:
+    ) -> list[ProjectSnapshotEntry]:
         source_files = list(path_resolver.source_directory.rglob("*.cpp"))
         if build_mode == BuildMode.TEST:
             source_files.extend(path_resolver.test_directory.rglob("*.cpp"))
 
-        file_snapshots: list[ProjectFileSnapshot] = []
+        file_snapshots: list[ProjectSnapshotEntry] = []
         for source_file in source_files:
             source_file_time = source_file.stat().st_mtime
             object_file = path_resolver.object_file(source_file, build_mode)
@@ -56,7 +56,7 @@ class ProjectSnapshotFactory:
                 object_file.stat().st_mtime if object_file.exists() else None
             )
 
-            file_snapshot = ProjectFileSnapshot(
+            file_snapshot = ProjectSnapshotEntry(
                 source_file,
                 source_file_time,
                 object_file,
