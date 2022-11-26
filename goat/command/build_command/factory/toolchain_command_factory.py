@@ -4,13 +4,13 @@ from goat.command.build_command.parameters.compile_parameters import CompilePara
 from goat.command.build_command.parameters.link_parameters import LinkParameters
 
 
-class CommandBuilder(ABC):
+class ToolchainCommandFactory(ABC):
     @staticmethod
     @abstractmethod
-    def build_compile(compile_parameters: CompileParameters) -> Command:
+    def create_compile(compile_parameters: CompileParameters) -> Command:
         ...
 
     @staticmethod
     @abstractmethod
-    def build_link(link_parameters: LinkParameters) -> Command:
+    def create_link(link_parameters: LinkParameters) -> Command:
         ...
