@@ -13,4 +13,4 @@ class CommandResults:
 
     @property
     def failure(self) -> bool:
-        return self.return_code != 0
+        return not self.success

@@ -42,3 +42,9 @@ class ProjectPathResolver:
     @property
     def binary_directory(self) -> Path:
         return self.build_directory / self.BINARY_DIRECTORY_NAME
+
+    def object_file(self, source_file: Path) -> Path:
+        relative_source_file = source_file.relative_to(self.root_path)
+        object_file_name = f"{relative_source_file.stem}.o"
+        relative_object_file = relative_source_file.parent / object_file_name
+        return self.object_directory / relative_object_file
