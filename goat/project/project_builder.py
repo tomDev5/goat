@@ -1,8 +1,7 @@
 from pathlib import Path
-from subprocess import PIPE, run
 from loguru import logger
-from goat.command.build_command.builder.command_builder_factory import (
-    CommandBuilderFactory,
+from goat.command.build_command.builder.build_command_factory import (
+    BuildCommandFactory,
 )
 from goat.command.command_runner import CommandRunner
 from goat.project.build_mode import BuildMode
@@ -63,10 +62,7 @@ class ProjectBuilder:
             .build()
         )
 
-        command = CommandBuilderFactory.create(executable).build_compile(
-            compile_parameters
-        )
-
+        command = BuildCommandFactory.create_compile(executable, compile_parameters)
         command_results = CommandRunner.run(command)
         if command_results.failure:
             raise Exception(command_results.standard_error)
@@ -98,8 +94,7 @@ class ProjectBuilder:
             .build()
         )
 
-        command = CommandBuilderFactory.create(executable).build_link(link_parameters)
-
+        command = BuildCommandFactory.create_link(executable, link_parameters)
         command_results = CommandRunner.run(command)
         if command_results.failure:
             raise Exception(command_results.standard_error)

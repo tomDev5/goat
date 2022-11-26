@@ -1,13 +1,15 @@
 from pathlib import Path
 from goat.command.command import Command
-from goat.command.build_command.builder.command_builder import CommandBuilder
+from goat.command.build_command.builder.base_build_command_factory import (
+    BaseBuildCommandFactory,
+)
 from goat.command.build_command.parameters.compile_parameters import CompileParameters
 from goat.command.build_command.parameters.link_parameters import LinkParameters
 
 
-class GPPCommandBuilder(CommandBuilder):
+class GPPBuildCommandFactory(BaseBuildCommandFactory):
     @staticmethod
-    def build_compile(compile_parameters: CompileParameters) -> Command:
+    def create_compile(compile_parameters: CompileParameters) -> Command:
         parameters: list[str | Path] = []
 
         parameters.extend(
@@ -27,7 +29,7 @@ class GPPCommandBuilder(CommandBuilder):
         return Command(compile_parameters.executable, parameters)
 
     @staticmethod
-    def build_link(link_parameters: LinkParameters) -> Command:
+    def create_link(link_parameters: LinkParameters) -> Command:
         parameters: list[str | Path] = []
 
         parameters.extend(link_parameters.object_files)
