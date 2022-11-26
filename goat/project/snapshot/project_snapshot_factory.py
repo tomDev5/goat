@@ -20,7 +20,7 @@ class ProjectSnapshotFactory:
         project_file_snapshots: list[ProjectFileSnapshot] = []
         for source_file in source_files:
             source_file_modified = source_file.stat().st_mtime
-            object_file = path_resolver.object_file(source_file)
+            object_file = path_resolver.object_file(source_file, build_mode)
             object_file_modified = (
                 object_file.stat().st_mtime if object_file.exists() else None
             )
