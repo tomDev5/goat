@@ -13,8 +13,10 @@ from goat.command.build_command.parameters.compile_parameters_builder import (
 from goat.command.build_command.parameters.link_parameters_builder import (
     LinkParametersBuilder,
 )
-from goat.project.snapshot.project_snapshot_factory import ProjectSnapshotFactory
-from goat.project.snapshot.project_snapshot_summary_factory import ProjectSummaryFactory
+from goat.project.changes.project_timestamps_factory import ProjectTimestampsFactory
+from goat.project.changes.project_changes_factory import (
+    ProjectChangesFactory,
+)
 
 
 class ProjectBuilder:
@@ -24,26 +26,39 @@ class ProjectBuilder:
         self.project_configuration = project_configuration
 
     def build_target_file(self, build_mode: BuildMode) -> None:
-        snapshot = ProjectSnapshotFactory.create(self.project_configuration, build_mode)
-        summary = ProjectSummaryFactory.create(snapshot)
+        project_timestamps = ProjectTimestampsFactory.create(
+            self.project_configuration,
+            build_mode,
+        )
 
-        for source_file, object_file in summary.outdated_files:
+        project_changes = ProjectChangesFactory.create(project_timestamps)
+
+        for source_file in project_changes.changed_files:
             relative_source_file = source_file.relative_to(self.path_resolver.root_path)
             logger.trace(f"Compiling {relative_source_file}")
+
+            object_file = self.path_resolver.get_object_file(source_file, build_mode)
             object_file.parent.mkdir(parents=True, exist_ok=True)
             self.compile_object_file(source_file, object_file, build_mode)
 
-        for source_file, object_file in summary.updated_files:
+        for source_file in project_changes.unchanged_files:
             relative_source_file = source_file.relative_to(self.path_resolver.root_path)
             logger.trace(f"Skipping compilation of {relative_source_file}")
 
         target_file = self.project_configuration.target(build_mode)
         relative_target_file = target_file.relative_to(self.path_resolver.root_path)
 
-        if summary.target_file_outdated:
+        if project_changes.target_file_changed:
             logger.trace(f"Linking {relative_target_file}")
+
+            object_files = [
+                self.path_resolver.get_object_file(source_file, build_mode)
+                for source_file in project_changes.unchanged_files
+                + project_changes.changed_files
+            ]
+
             target_file.parent.mkdir(parents=True, exist_ok=True)
-            self.link_object_files(summary.object_files, target_file, build_mode)
+            self.link_object_files(object_files, target_file, build_mode)
 
         else:
             logger.trace(f"Skipping linkage of {relative_target_file}")
