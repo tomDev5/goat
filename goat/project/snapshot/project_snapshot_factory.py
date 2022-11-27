@@ -12,7 +12,7 @@ class ProjectSnapshotFactory:
         project_configuration: ProjectConfiguration,
         build_mode: BuildMode,
     ) -> ProjectSnapshot:
-        file_snapshots = cls.get_file_snapshots(
+        file_snapshots = cls.create_file_snapshots(
             project_configuration.path_resolver,
             build_mode,
         )
@@ -40,7 +40,7 @@ class ProjectSnapshotFactory:
         )
 
     @staticmethod
-    def get_file_snapshots(
+    def create_file_snapshots(
         path_resolver: ProjectPathResolver,
         build_mode: BuildMode,
     ) -> list[ProjectSnapshotEntry]:
@@ -48,33 +48,46 @@ class ProjectSnapshotFactory:
         if build_mode == BuildMode.TEST:
             source_files.extend(path_resolver.test_directory.rglob("*.cpp"))
 
-        file_snapshots: list[ProjectSnapshotEntry] = []
-        for source_file in source_files:
-            source_file_time = source_file.stat().st_mtime
-            object_file = path_resolver.get_object_file(source_file, build_mode)
-            object_file_time = (
-                object_file.stat().st_mtime if object_file.exists() else None
-            )
-
-            file_snapshot = ProjectSnapshotEntry(
+        return [
+            ProjectSnapshotFactory.create_file_snapshot(
+                path_resolver,
+                build_mode,
                 source_file,
-                source_file_time,
-                object_file,
-                object_file_time,
             )
+            for source_file in source_files
+        ]
 
-            file_snapshots.append(file_snapshot)
+    @staticmethod
+    def create_file_snapshot(
+        path_resolver,
+        build_mode,
+        source_file,
+    ) -> ProjectSnapshotEntry:
+        source_file_time = source_file.stat().st_mtime
+        object_file = path_resolver.get_object_file(source_file, build_mode)
+        object_file_time = object_file.stat().st_mtime if object_file.exists() else None
 
-        return file_snapshots
+        file_snapshot = ProjectSnapshotEntry(
+            source_file,
+            source_file_time,
+            object_file,
+            object_file_time,
+        )
+
+        return file_snapshot
 
     @staticmethod
     def get_latest_include_file_time(
         path_resolver: ProjectPathResolver,
     ) -> float | None:
-        include_files = [path_resolver.include_directory]
-        include_files += list(path_resolver.include_directory.rglob("*"))
+        include_tree = [
+            path_resolver.include_directory,
+            *path_resolver.include_directory.rglob("*"),
+        ]
+
         return max(
-            (header_file.stat().st_mtime for header_file in include_files), default=None
+            (header_file.stat().st_mtime for header_file in include_tree),
+            default=None,
         )
 
     @staticmethod
