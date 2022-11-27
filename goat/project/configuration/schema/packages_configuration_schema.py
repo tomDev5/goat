@@ -2,4 +2,4 @@ from pydantic import BaseModel
 
 
 class PackagesConfigurationSchema(BaseModel):
-    pass
+    requirements: dict[str, str] | None = None

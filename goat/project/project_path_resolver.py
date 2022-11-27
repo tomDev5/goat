@@ -11,6 +11,7 @@ class ProjectPathResolver:
     BUILD_DIRECTORY_NAME = "build"
     OBJECT_DIRECTORY_NAME = "object"
     BINARY_DIRECTORY_NAME = "binary"
+    CONAN_DIRECTORY_NAME = ".conan"
 
     def __init__(self, root_path: Path) -> None:
         self.root_path = root_path
@@ -42,3 +43,7 @@ class ProjectPathResolver:
     @property
     def binary_directory(self) -> Path:
         return self.build_directory / self.BINARY_DIRECTORY_NAME
+
+    @property
+    def conan_directory(self) -> Path:
+        return self.build_directory / self.CONAN_DIRECTORY_NAME
