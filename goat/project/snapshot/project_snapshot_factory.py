@@ -51,7 +51,7 @@ class ProjectSnapshotFactory:
         file_snapshots: list[ProjectSnapshotEntry] = []
         for source_file in source_files:
             source_file_time = source_file.stat().st_mtime
-            object_file = path_resolver.object_file(source_file, build_mode)
+            object_file = path_resolver.get_object_file(source_file, build_mode)
             object_file_time = (
                 object_file.stat().st_mtime if object_file.exists() else None
             )

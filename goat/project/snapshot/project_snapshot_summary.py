@@ -14,9 +14,4 @@ class ProjectSummary:
 
     @property
     def object_files(self) -> list[Path]:
-        return list(
-            map(
-                lambda file_pair: file_pair[1],
-                self.updated_files + self.outdated_files,
-            )
-        )
+        return [file_pair[1] for file_pair in self.updated_files + self.outdated_files]

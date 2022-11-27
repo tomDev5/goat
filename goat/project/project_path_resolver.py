@@ -37,17 +37,17 @@ class ProjectPathResolver:
     def build_directory(self) -> Path:
         return self.root_path / self.BUILD_DIRECTORY_NAME
 
-    def build_mode_directory(self, build_mode: BuildMode) -> Path:
+    def get_build_mode_directory(self, build_mode: BuildMode) -> Path:
         return self.build_directory / build_mode.value
 
-    def object_directory(self, build_mode: BuildMode) -> Path:
-        return self.build_mode_directory(build_mode) / self.OBJECT_DIRECTORY_NAME
+    def get_object_directory(self, build_mode: BuildMode) -> Path:
+        return self.get_build_mode_directory(build_mode) / self.OBJECT_DIRECTORY_NAME
 
-    def binary_directory(self, build_mode: BuildMode) -> Path:
-        return self.build_mode_directory(build_mode) / self.BINARY_DIRECTORY_NAME
+    def get_binary_directory(self, build_mode: BuildMode) -> Path:
+        return self.get_build_mode_directory(build_mode) / self.BINARY_DIRECTORY_NAME
 
-    def object_file(self, source_file: Path, build_mode: BuildMode) -> Path:
+    def get_object_file(self, source_file: Path, build_mode: BuildMode) -> Path:
         relative_source_file = source_file.relative_to(self.root_path)
         object_file_name = f"{relative_source_file.name}.o"
         relative_object_file = relative_source_file.parent / object_file_name
-        return self.object_directory(build_mode) / relative_object_file
+        return self.get_object_directory(build_mode) / relative_object_file
