@@ -91,7 +91,7 @@ class ProjectConfiguration:
 
     def target(self, build_mode: BuildMode) -> Path:
         name = self.configuration_variant(build_mode).target
-        return self.path_resolver.binary_directory / name
+        return self.path_resolver.get_binary_directory(build_mode) / name
 
     def compiler(self, build_mode: BuildMode) -> str:
         return self.configuration_variant(build_mode).compiler

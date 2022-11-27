@@ -19,9 +19,11 @@ class Project:
     def from_path(cls, root_path: Path) -> Project:
         logger.info(f"Loading project '{root_path.name}'")
         configuration_path = root_path / ProjectConfiguration.CONFIGURATION_FILE_NAME
-        
+
         if not configuration_path.is_file():
-            raise FileNotFoundError(f"Cannot find `{ProjectConfiguration.CONFIGURATION_FILE_NAME}` in `{root_path.absolute()}`")
+            raise FileNotFoundError(
+                f"Cannot find `{ProjectConfiguration.CONFIGURATION_FILE_NAME}` in `{root_path.absolute()}`"
+            )
 
         project_configuration = ProjectConfiguration.from_path(
             root_path, configuration_path
@@ -50,7 +52,7 @@ class Project:
 
     def clean(self) -> None:
         logger.info("Cleaning project")
-        rmtree(self.path_resolver.build_directory)
+        rmtree(self.path_resolver.build_directory, ignore_errors=True)
 
     @property
     def path_resolver(self) -> ProjectPathResolver:

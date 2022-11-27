@@ -3,8 +3,8 @@ from goat.project.template.template import Template
 
 
 class ProjectInitializer:
-    TEMPLATE_MAIN_FILE_NAME = "main.cc"
-    TEMPLATE_TEST_FILE_NAME = "test.cc"
+    TEMPLATE_MAIN_FILE_NAME = "main.cpp"
+    TEMPLATE_TEST_FILE_NAME = "test.cpp"
 
     @classmethod
     def initialize(cls, path_resolver: ProjectPathResolver):
