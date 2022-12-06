@@ -116,3 +116,6 @@ class ProjectConfiguration:
 
     def libraries(self, build_mode: BuildMode) -> list[str]:
         return self.configuration_variant(build_mode).libraries
+
+    def toolchain(self, build_mode: BuildMode) -> str:
+        return self.configuration_variant(build_mode).toolchain

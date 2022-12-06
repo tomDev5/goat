@@ -11,8 +11,8 @@ from goat.command.command import Command
 
 class BuildCommandFactory:
     @staticmethod
-    def create_toolchain_factory(program: str) -> type[ToolchainCommandFactory]:
-        match program:
+    def create_toolchain_factory(toolchain: str) -> type[ToolchainCommandFactory]:
+        match toolchain:
             case "g++":
                 return GPPCommandFactory
 
@@ -21,11 +21,13 @@ class BuildCommandFactory:
     @classmethod
     def create_compile(
         cls,
-        program: str,
+        toolchain: str,
         compile_parameters: CompileParameters,
     ) -> Command:
-        return cls.create_toolchain_factory(program).create_compile(compile_parameters)
+        return cls.create_toolchain_factory(toolchain).create_compile(
+            compile_parameters
+        )
 
     @classmethod
-    def create_link(cls, program: str, link_parameters: LinkParameters) -> Command:
-        return cls.create_toolchain_factory(program).create_link(link_parameters)
+    def create_link(cls, toolchain: str, link_parameters: LinkParameters) -> Command:
+        return cls.create_toolchain_factory(toolchain).create_link(link_parameters)
