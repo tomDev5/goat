@@ -2,6 +2,8 @@ from pydantic import BaseModel, Field
 
 
 class BuildConfigurationVariantSchema(BaseModel):
+    toolchain: str | None = None
+
     target: str | None = None
     linker: str | None = None
     linker_flags: list[str] = Field(default_factory=list)

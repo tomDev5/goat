@@ -69,6 +69,7 @@ class ProjectBuilder:
         object_file: Path,
         build_mode: BuildMode,
     ) -> None:
+        toolchain = self.project_configuration.toolchain(build_mode)
         executable = self.project_configuration.compiler(build_mode)
         include_directory = self.path_resolver.include_directory
         include_paths = self.project_configuration.include_paths(build_mode)
@@ -88,7 +89,7 @@ class ProjectBuilder:
             .build()
         )
 
-        command = BuildCommandFactory.create_compile(executable, compile_parameters)
+        command = BuildCommandFactory.create_compile(toolchain, compile_parameters)
         command_results = CommandRunner.run(command)
         if command_results.failure:
             raise Exception(command_results.standard_error)
@@ -99,6 +100,7 @@ class ProjectBuilder:
         target_file: Path,
         build_mode: BuildMode,
     ) -> None:
+        toolchain = self.project_configuration.toolchain(build_mode)
         executable = self.project_configuration.linker(build_mode)
         library_paths = self.project_configuration.library_paths(build_mode)
         libraries = self.project_configuration.libraries(build_mode)
@@ -116,7 +118,7 @@ class ProjectBuilder:
             .build()
         )
 
-        command = BuildCommandFactory.create_link(executable, link_parameters)
+        command = BuildCommandFactory.create_link(toolchain, link_parameters)
         command_results = CommandRunner.run(command)
         if command_results.failure:
             raise Exception(command_results.standard_error)

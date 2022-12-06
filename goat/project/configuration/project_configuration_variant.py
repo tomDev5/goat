@@ -5,6 +5,8 @@ from pathlib import Path
 
 @dataclass
 class ProjectConfigurationVariant:
+    toolchain: str
+
     target: str
     linker: str
     linker_flags: list[str]

@@ -22,13 +22,21 @@ class ProjectConfigurationVariantFactory:
             case BuildMode.TEST:
                 configuration_variant = configuration_schema.build.test
 
+        toolchain = (
+            configuration_variant.toolchain or configuration_schema.build.all.toolchain
+        )
+        if toolchain is None:
+            raise Exception(f"'toolchain' is missing for {build_mode.name}")
+
         target = configuration_variant.target or configuration_schema.build.all.target
         if target is None:
             raise Exception(f"'target' is missing for {build_mode.name}")
 
-        linker = configuration_variant.linker or configuration_schema.build.all.linker
-        if linker is None:
-            raise Exception(f"'linker' is missing for {build_mode.name}")
+        linker = (
+            configuration_variant.linker
+            or configuration_schema.build.all.linker
+            or toolchain
+        )
 
         linker_flags = [
             *configuration_schema.build.all.linker_flags,
@@ -49,10 +57,10 @@ class ProjectConfigurationVariantFactory:
         ]
 
         compiler = (
-            configuration_variant.compiler or configuration_schema.build.all.compiler
+            configuration_variant.compiler
+            or configuration_schema.build.all.compiler
+            or toolchain
         )
-        if compiler is None:
-            raise Exception(f"'compiler' is missing for {build_mode.name}")
 
         compiler_flags = [
             *configuration_schema.build.all.compiler_flags,
@@ -73,6 +81,7 @@ class ProjectConfigurationVariantFactory:
         ]
 
         return ProjectConfigurationVariant(
+            toolchain,
             target,
             linker,
             linker_flags,

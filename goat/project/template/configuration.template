@@ -1,9 +1,9 @@
 [build.all]
-linker = "g++"
+toolchain = "g++"
+
 linker_flags = []
 library_paths = []
 libraries = []
-compiler = "g++"
 compiler_flags = ["-std=c++17", "-Wall", "-Werror"]
 include_paths = []
 defines = []
@@ -23,5 +23,3 @@ target = "application_test"
 libraries = ["gtest", "gtest_main", "pthread"]
 compiler_flags = ["-Og"]
 defines = ["DEBUG", "TEST"]
-
-[packages]
